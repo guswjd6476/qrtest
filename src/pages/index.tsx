@@ -1,9 +1,5 @@
-import QRGenerator from './components/QRGenerator';
+import { useState } from 'react';
 
 export default function Home() {
-    return (
-        <main>
-            <QRGenerator />
-        </main>
-    );
+    return <div>IAMWHOIAM</div>;
 }
