@@ -10,7 +10,7 @@ const QRGenerator = () => {
     const router = useRouter();
 
     const handleInputChange = (value: string) => {
-        setQrData(`https://qrtest-eight.vercel.app/Iam?date=${value}`);
+        setQrData(value);
         setIsGenerated(false);
     };
 
@@ -45,7 +45,7 @@ const QRGenerator = () => {
                         className="border p-2"
                         onClick={handleQRClick}
                     >
-                        <QRCode value={qrData} />
+                        <QRCode value={`https://qrtest-eight.vercel.app/Iam?date=${qrData}`} />
                     </div>
                 </>
             )}
