@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 
-const PuzzlePiece = ({ filled }) => (
+const PuzzlePiece = ({}) => (
     <div
         style={{
             width: '50px',
             height: '50px',
             border: '1px solid black',
-            background: filled ? 'blue' : 'white',
+            background: 'white',
         }}
     />
 );
@@ -65,10 +65,7 @@ export default function Iam() {
             {showAttendance && (
                 <div>
                     {attendance.map((date, index) => (
-                        <PuzzlePiece
-                            key={index}
-                            filled={true}
-                        />
+                        <PuzzlePiece key={index} />
                     ))}
                 </div>
             )}
