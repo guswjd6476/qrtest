@@ -10,7 +10,7 @@ const QRGenerator = () => {
     const router = useRouter();
 
     const handleInputChange = (value: string) => {
-        setQrData(value);
+        setQrData(`https://qrtest-eight.vercel.app/Iam?date=${value}`);
         setIsGenerated(false);
     };
 
