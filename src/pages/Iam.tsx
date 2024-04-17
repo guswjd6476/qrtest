@@ -1,81 +1,68 @@
+'use client';
+
 import { useState } from 'react';
-import { useRouter } from 'next/router';
+import axios from 'axios';
 
-interface PuzzlePieceProps {
-    filled: boolean;
-}
-
-const PuzzlePiece: React.FC<PuzzlePieceProps> = ({ filled }) => (
-    <div
-        style={{
-            width: '50px',
-            height: '50px',
-            border: '1px solid black',
-            background: filled ? 'blue' : 'white',
-        }}
-    />
+const PuzzlePiece = ({ filled }) => (
+    <div className={`w-10 h-10 border border-black ${filled ? 'bg-blue-500' : 'bg-white'}`} />
 );
 
-const Iam: React.FC = () => {
-    const router = useRouter();
-
-    const [attendance, setAttendance] = useState<Date[]>([]);
-
+const Iam = () => {
+    const [attendance, setAttendance] = useState([]);
     const [name, setName] = useState('');
     const [showAttendance, setShowAttendance] = useState(false);
 
-    // URL에서 날짜를 가져오는 함수
-    const getDateFromQuery = (query: string | null): Date | null => {
-        if (!query) return null;
-        const dateParam = new URLSearchParams(query).get('date');
-        if (!dateParam) return null;
-        const [day, month, year] = dateParam.match(/\d{2}/g)!;
-        return new Date(`20${year}-${month}-${day}`);
-    };
+    const handleSubmit = async (event) => {
+        event.preventDefault(); // 폼 제출 시 새로고침 방지
+        console.log('폼 제출 확인');
 
-    // 현재 URL에서 날짜를 가져옴
-    const currentDate = getDateFromQuery(typeof router.query?.date === 'string' ? router.query.date : null);
-
-    // 출석 정보 초기화
-    const initializeAttendance = () => {
-        // 여기서 출석 정보를 가져와야 하지만 예시로 빈 배열을 사용합니다.
-        // 실제로는 서버에서 출석 정보를 가져와야 합니다.
-        // 예: const attendanceData = fetchAttendance(currentDate);
-        //     setAttendance(attendanceData);
-        setAttendance([]);
-    };
-
-    // 이름 입력 후 출석 정보 표시
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        initializeAttendance();
-        setShowAttendance(true);
+        try {
+            const response = await axios.post('/api/addName', { name });
+            console.log(response, '??res');
+            if (response.status === 200) {
+                const result = response.data;
+                console.log(result);
+                setAttendance(result);
+                setShowAttendance(true);
+            } else {
+                console.error('서버 오류:', response.status);
+            }
+        } catch (error) {
+            console.error('오류 발생:', error);
+            // 오류 처리를 수행하세요.
+        }
     };
 
     return (
-        <div>
-            <div>
-                <form onSubmit={handleSubmit}>
-                    <label>
+        <div className="p-4">
+            {!showAttendance ? (
+                <form onSubmit={handleSubmit} className="mb-4">
+                    <label className="block mb-2">
                         이름:
                         <input
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
+                            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-blue-500"
                         />
                     </label>
-                    <button type="submit">입력</button>
+                    <button
+                        type="submit"
+                        className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                    >
+                        입력
+                    </button>
                 </form>
-            </div>
-            {showAttendance && (
-                <div>
-                    {attendance.map((date, index) => (
-                        <PuzzlePiece
-                            key={index}
-                            filled={true}
-                        />
-                    ))}
-                </div>
+            ) : (
+                <>
+                    {showAttendance && (
+                        <div className="flex">
+                            {attendance.map((date, index) => (
+                                <PuzzlePiece key={index} filled={true} />
+                            ))}
+                        </div>
+                    )}
+                </>
             )}
         </div>
     );
