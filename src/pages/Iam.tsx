@@ -1,18 +1,18 @@
 'use client';
-
 import { useState } from 'react';
 import axios from 'axios';
+import { FormEvent } from 'react';
 
-const PuzzlePiece = ({ filled }) => (
+const PuzzlePiece = ({ filled }: { filled: boolean }) => (
     <div className={`w-10 h-10 border border-black ${filled ? 'bg-blue-500' : 'bg-white'}`} />
 );
 
 const Iam = () => {
-    const [attendance, setAttendance] = useState([]);
+    const [attendance, setAttendance] = useState<any[]>([]);
     const [name, setName] = useState('');
     const [showAttendance, setShowAttendance] = useState(false);
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault(); // 폼 제출 시 새로고침 방지
         console.log('폼 제출 확인');
 

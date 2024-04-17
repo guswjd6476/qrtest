@@ -1,14 +1,13 @@
+import { NextApiRequest, NextApiResponse } from 'next';
 import { db } from '@vercel/postgres';
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     // 클라이언트 연결
     const client = await db.connect();
 
     try {
         if (req.method === 'POST') {
             const { username, password } = req.body;
-
-            // 현재 시간 설정
 
             // 데이터베이스에 삽입 쿼리 실행
             await client.query('INSERT INTO adminuser (userid, password) VALUES ($1, $2)', [username, password]);

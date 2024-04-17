@@ -1,7 +1,8 @@
-import axios from 'axios';
+'use client';
 import { useState } from 'react';
+import axios from 'axios';
+import { FormEvent } from 'react';
 
-import type { FormEvent } from 'react';
 interface AuthFormData {
     username: string;
     password: string;
@@ -13,10 +14,11 @@ interface AuthFormProps {
 }
 
 const Admin: React.FC<AuthFormProps> = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [allowLogin, setAllowLogin] = useState(true);
-    const handleSubmit = async (event) => {
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [allowLogin, setAllowLogin] = useState<boolean>(true);
+
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault(); // 폼 제출 시 새로고침 방지
         console.log('폼 제출 확인');
 
@@ -36,6 +38,7 @@ const Admin: React.FC<AuthFormProps> = () => {
             // 오류 처리를 수행하세요.
         }
     };
+
     return (
         <form onSubmit={handleSubmit} className="max-w-md mx-auto">
             <div className="mb-4">
