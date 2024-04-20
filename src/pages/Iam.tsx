@@ -1,35 +1,66 @@
-'use client';
 import { useState } from 'react';
 import axios from 'axios';
 import { FormEvent } from 'react';
 
-const PuzzlePiece = ({ filled }: { filled: boolean }) => (
-    <div className={`w-10 h-10 border border-black ${filled ? 'bg-blue-500' : 'bg-white'}`} />
-);
+// 직소퍼즐 모양의 퍼즐 생성 함수
+const generatePuzzle = (name: string) => {
+    const attendanceCount = name.length;
+    const puzzle: boolean[][] = [];
+
+    for (let i = 0; i < attendanceCount; i++) {
+        const row: boolean[] = [];
+        for (let j = 0; j < attendanceCount; j++) {
+            row.push(i === j);
+        }
+        puzzle.push(row);
+    }
+
+    return puzzle;
+};
+
+// 퍼즐 조각 컴포넌트
+const PuzzlePiece = ({ filled }: { filled: boolean }) => {
+    return (
+        <div className={`relative w-20 h-20 border border-black rounded-md ${filled ? 'bg-blue-500' : 'bg-gray-300'}`}>
+            {/* 퍼즐이 채워져 있는 경우에만 윤곽을 그립니다. */}
+            {filled && (
+                <svg className="absolute inset-0" viewBox="0 0 100 100">
+                    {/* 직소퍼즐 윤곽을 그립니다. */}
+                    <rect
+                        x="5"
+                        y="5"
+                        width="90"
+                        height="90"
+                        fill="none"
+                        stroke="black"
+                        strokeWidth="2"
+                        strokeLinejoin="round"
+                    />
+                </svg>
+            )}
+        </div>
+    );
+};
 
 const Iam = () => {
-    const [attendance, setAttendance] = useState<any[]>([]);
+    const [attendance, setAttendance] = useState<boolean[][]>([]);
     const [name, setName] = useState('');
     const [showAttendance, setShowAttendance] = useState(false);
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault(); // 폼 제출 시 새로고침 방지
-        console.log('폼 제출 확인');
+        event.preventDefault();
 
         try {
             const response = await axios.post('/api/addName', { name });
-            console.log(response, '??res');
             if (response.status === 200) {
                 const result = response.data;
-                console.log(result);
-                setAttendance(result);
+                setAttendance(generatePuzzle(result));
                 setShowAttendance(true);
             } else {
                 console.error('서버 오류:', response.status);
             }
         } catch (error) {
             console.error('오류 발생:', error);
-            // 오류 처리를 수행하세요.
         }
     };
 
@@ -54,15 +85,13 @@ const Iam = () => {
                     </button>
                 </form>
             ) : (
-                <>
-                    {showAttendance && (
-                        <div className="flex">
-                            {attendance.map((date, index) => (
-                                <PuzzlePiece key={index} filled={true} />
-                            ))}
-                        </div>
-                    )}
-                </>
+                attendance.map((row: boolean[], rowIndex: number) => (
+                    <div key={rowIndex} className="flex">
+                        {row.map((filled: boolean, colIndex: number) => (
+                            <PuzzlePiece key={colIndex} filled={filled} />
+                        ))}
+                    </div>
+                ))
             )}
         </div>
     );
