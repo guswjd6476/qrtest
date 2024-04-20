@@ -5,12 +5,14 @@ import { FormEvent } from 'react';
 // 직소퍼즐 모양의 퍼즐 생성 함수
 const generatePuzzle = (name: string) => {
     const attendanceCount = name.length;
+    const puzzleSize = Math.ceil(Math.sqrt(attendanceCount));
     const puzzle: boolean[][] = [];
 
-    for (let i = 0; i < attendanceCount; i++) {
+    for (let i = 0; i < puzzleSize; i++) {
         const row: boolean[] = [];
-        for (let j = 0; j < attendanceCount; j++) {
-            row.push(i === j);
+        for (let j = 0; j < puzzleSize; j++) {
+            const index = i * puzzleSize + j;
+            row.push(index < attendanceCount);
         }
         puzzle.push(row);
     }
