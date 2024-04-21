@@ -3,10 +3,14 @@ import axios from 'axios';
 import { FormEvent } from 'react';
 import { useRouter } from 'next/router';
 
-const PuzzlePiece = ({ filled }: { filled: boolean }) => {
+interface PuzzlePieceProps {
+    filled: boolean;
+}
+
+const PuzzlePiece: React.FC<PuzzlePieceProps> = ({ filled }) => {
     // 각 조각의 윤곽을 그리는 함수
     const drawOutline = () => {
-        const outlineStyle = {
+        const outlineStyle: React.CSSProperties = {
             fill: 'none',
             stroke: 'black',
             strokeWidth: '2', // 테두리를 더 두껍게 설정
@@ -34,14 +38,14 @@ const PuzzlePiece = ({ filled }: { filled: boolean }) => {
     );
 };
 
-const Iam = () => {
+const Iam: React.FC = () => {
     const router = useRouter();
     const { date } = router.query;
 
     const [attendance, setAttendance] = useState<boolean[][]>([]); // 출석 여부 배열
-    const [name, setName] = useState(''); // 이름 입력 상태
+    const [name, setName] = useState<string>(''); // 이름 입력 상태
     const [uidList, setUidList] = useState<any>(null); // uidList의 초기값을 null로 설정
-    const [showAttendance, setShowAttendance] = useState(false); // 출석 여부 표시 상태
+    const [showAttendance, setShowAttendance] = useState<boolean>(false); // 출석 여부 표시 상태
 
     useEffect(() => {
         const fetchData = async () => {
@@ -50,7 +54,7 @@ const Iam = () => {
                 const response = await axios.get('/api/selectUid');
                 if (response.status === 200) {
                     const result = response.data;
-                    setUidList(result.find((value) => value.uid === date));
+                    setUidList(result.find((value: any) => value.uid === date));
                 } else {
                     console.error('서버 오류:', response.status);
                 }
@@ -87,7 +91,7 @@ const Iam = () => {
             // 오류 처리
         }
     };
-    const generatePuzzle = (result) => {
+    const generatePuzzle = (result: any[]) => {
         // 4x4 크기의 출석 여부 배열 생성
         const attendanceArray: boolean[][] = [];
         const puzzleOrder = [1, 16, 2, 3, 12, 13, 4, 8, 9, 10, 11, 14, 15, 5, 6, 7];
