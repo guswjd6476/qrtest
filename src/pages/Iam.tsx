@@ -94,7 +94,8 @@ const Iam: React.FC = () => {
     const generatePuzzle = (result: any[]) => {
         // 4x4 크기의 출석 여부 배열 생성
         const attendanceArray: boolean[][] = [];
-        const puzzleOrder = [1, 16, 2, 3, 12, 13, 4, 8, 9, 10, 11, 14, 15, 5, 6, 7];
+        //const puzzleOrder = [1, 16, 2, 3, 12, 13, 4, 8, 9, 10, 11, 14, 15, 5, 6, 7];
+        const puzzleOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
         for (let i = 0; i < 4; i++) {
             const row: boolean[] = [];
