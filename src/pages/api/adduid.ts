@@ -7,19 +7,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         if (req.method === 'POST') {
-            const { name, uid } = req.body;
-
-            // 현재 시간 설정
-
+            const { qrData, qrUid } = req.body;
+            console.log(qrData, qrUid);
             // 데이터베이스에 삽입 쿼리 실행
-            await client.query('INSERT INTO storage (name,indexnum) VALUES ($1, $2)', [name, uid]);
+            await client.query('INSERT INTO uidtable (indexnum, uid) VALUES ($1, $2)', [qrData, qrUid]);
 
-            // 삽입된 데이터 조회 쿼리 실행
-            const result = await client.query('SELECT * FROM storage WHERE name = $1', [name]);
-
-            // 결과 반환
-            console.log(result.rows, '?st');
-            return res.status(200).json(result.rows || true);
+            return res.status(200).json(true);
         } else {
             // POST 요청이 아닌 경우에는 오류 응답
             return res.status(405).json({ error: 'Only POST requests allowed' });
