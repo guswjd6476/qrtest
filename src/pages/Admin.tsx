@@ -2,7 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { FormEvent } from 'react';
 import { useRouter } from 'next/router';
-import { useAuth } from './AuthProvider';
+import { useAuth } from '../AuthProvider';
 
 const Admin: React.FC = () => {
     const { isLoggedIn, logout, login } = useAuth();
