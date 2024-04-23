@@ -9,7 +9,8 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); // 기본값은 false
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+    // 기본값은 false
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -30,6 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // 로그아웃 함수
     const logout = () => {
+        alert('로그아웃 되었습니다');
         localStorage.removeItem('token');
         setIsLoggedIn(false); // 로그아웃 상태로 설정
     };
