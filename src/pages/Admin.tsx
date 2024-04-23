@@ -4,6 +4,11 @@ import { FormEvent } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../AuthProvider';
 
+interface ItemWithExpireTime {
+    value: string;
+    expire: number;
+}
+
 const Admin: React.FC = () => {
     const { isLoggedIn, logout, login } = useAuth();
     const [username, setUsername] = useState<string>('');
@@ -14,14 +19,26 @@ const Admin: React.FC = () => {
     const [allowLogin, setAllowLogin] = useState<boolean>(true);
     const router = useRouter();
 
+    const setItemWithExpireTime = (keyName: string, keyValue: string, tts: number) => {
+        const expireTime = Date.now() + tts; // 토큰의 만료 시간 계산
+        const obj: ItemWithExpireTime = {
+            value: keyValue,
+            expire: expireTime,
+        };
+        const objString = JSON.stringify(obj);
+        window.localStorage.setItem(keyName, objString);
+    };
+
     const handleSubmitLogin = async () => {
         try {
             const response = await axios.post('/api/adminLogin', { username, password });
             const { token } = response.data; // Extract token from response
 
             if (token) {
-                // Store token in localStorage
-                localStorage.setItem('token', token);
+                // Store token and its expiry time in localStorage
+                const TOKEN_EXPIRY_TIME = 3600 * 1000; // 토큰의 만료 시간: 1시간 (단위: 밀리초)
+                setItemWithExpireTime('token', token, TOKEN_EXPIRY_TIME);
+
                 alert('로그인 되었습니다');
                 login(); // 로그인 상태로 설정
                 // Redirect to Admin page
@@ -36,7 +53,11 @@ const Admin: React.FC = () => {
 
     const handleSubmit = async () => {
         try {
-            const response = await axios.post('/api/addAdmin', { username: newUsername, password: newPassword });
+            const response = await axios.post('/api/addAdmin', {
+                username: newUsername,
+                password: newPassword,
+                name: name,
+            });
             if (response.data === true) {
                 const result = response.data;
                 console.log(result);
@@ -50,7 +71,6 @@ const Admin: React.FC = () => {
             // Handle errors
         }
     };
-    console.log(username, password, '?');
     return (
         <div className="max-w-md mx-auto">
             {!isLoggedIn ? (
@@ -122,7 +142,7 @@ const Admin: React.FC = () => {
                     {/* 출석 현황 보기 및 Qrcode 페이지로 이동 버튼 */}
                     <div className="mt-6 flex justify-between">
                         <button
-                            onClick={() => router.push('/attendance')}
+                            onClick={() => router.push('/Attendance')}
                             className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
                         >
                             출석 현황 보기
