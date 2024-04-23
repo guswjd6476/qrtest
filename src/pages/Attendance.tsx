@@ -53,7 +53,7 @@ export default function Attendance() {
                     <thead>
                         <tr>
                             <th className="px-4 py-2"></th>
-                            {[...Array(16).keys()].map((_, index) => (
+                            {Array.from({ length: 16 }, (_, index) => (
                                 <th key={index} className="px-4 py-2">
                                     {index + 1}회차
                                 </th>
