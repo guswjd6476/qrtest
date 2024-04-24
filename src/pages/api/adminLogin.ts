@@ -21,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const token = jwt.sign({ username }, 'your-secret-key', { expiresIn: '1h' }); // Adjust expiry as needed
 
                 // Return token to the client
-                return res.status(200).json({ token });
+                return res.status(200).json({ token: token, grade: result.rows[0].grade });
             } else {
                 return res.status(401).json({ error: 'Invalid credentials' });
             }
