@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         if (req.method === 'POST') {
             const { username, password, name } = req.body;
-
+            console.log(username, password, name, '!');
             // Check if the username already exists in the database
             const existingUser = await client.query('SELECT * FROM adminuser WHERE userid = $1', [username]);
             if (existingUser.rows.length > 0) {
@@ -17,10 +17,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
 
             // 데이터베이스에 삽입 쿼리 실행
-            await client.query('INSERT INTO adminuser (userid, password,name) VALUES ($1, $2,$3)', [
+            await client.query('INSERT INTO adminuser (userid, password,name,grade) VALUES ($1, $2,$3,$4)', [
                 username,
                 password,
                 name,
+                0,
             ]);
 
             return res.status(200).json(true);

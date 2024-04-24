@@ -32,9 +32,9 @@ const Admin: React.FC = () => {
     const handleSubmitLogin = async () => {
         try {
             const response = await axios.post('/api/adminLogin', { username, password });
-            const { token } = response.data; // Extract token from response
-
-            if (token) {
+            const { token, grade } = response.data; // Extract token from response
+            console.log(token, '?token');
+            if (token && grade === 1) {
                 // Store token and its expiry time in localStorage
                 const TOKEN_EXPIRY_TIME = 3600 * 1000; // 토큰의 만료 시간: 1시간 (단위: 밀리초)
                 setItemWithExpireTime('token', token, TOKEN_EXPIRY_TIME);
@@ -43,11 +43,14 @@ const Admin: React.FC = () => {
                 login(); // 로그인 상태로 설정
                 // Redirect to Admin page
                 router.push('/Admin');
+            } else if (token && grade !== 1) {
+                alert('인증받지 못한 아이디 입니다');
             } else {
                 alert('아이디 비밀번호를 확인해주세요');
             }
         } catch (error) {
             console.error('오류 발생:', error);
+            alert('아이디 비밀번호를 확인해주세요');
         }
     };
 
