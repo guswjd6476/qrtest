@@ -143,12 +143,18 @@ const Admin: React.FC = () => {
             ) : (
                 <>
                     {/* 출석 현황 보기 및 Qrcode 페이지로 이동 버튼 */}
-                    <div className="mt-6 flex justify-between">
+                    <div className="mt-6 w-full flex justify-between">
                         <button
                             onClick={() => router.push('/Attendance')}
                             className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
                         >
-                            출석 현황 보기
+                            출석현황보기(합반전)
+                        </button>
+                        <button
+                            onClick={() => router.push('/Attendance2')}
+                            className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                        >
+                            출석현황보기(합반후)
                         </button>
                         <button
                             onClick={() => router.push('/Qrcode')}

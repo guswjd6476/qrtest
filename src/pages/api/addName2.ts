@@ -12,10 +12,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             // 현재 시간 설정
 
             // 데이터베이스에 삽입 쿼리 실행
-            await client.query('INSERT INTO storage (name,indexnum) VALUES ($1, $2)', [name, uid]);
+            await client.query('INSERT INTO storage2 (name,indexnum) VALUES ($1, $2)', [name, uid]);
 
             // 삽입된 데이터 조회 쿼리 실행
-            const result = await client.query('SELECT * FROM storage WHERE name = $1', [name]);
+            const result = await client.query('SELECT * FROM storage2 WHERE name = $1', [name]);
 
             // 결과 반환
             return res.status(200).json(result.rows || true);

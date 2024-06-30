@@ -77,7 +77,7 @@ const Iam: React.FC = () => {
         try {
             // 서버로 이름 전송
             const uid = uidList.indexnum;
-            const response = await axios.post('/api/addName', { name, uid });
+            const response = await axios.post('/api/addName2', { name, uid });
             if (response.status === 200) {
                 const result = response.data; // 서버에서 받은 결과
                 console.log(result, '?result');
