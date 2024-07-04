@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             // 삽입된 데이터 조회 쿼리 실행
             const result = await client.query('SELECT * FROM storage2 WHERE name = $1', [name]);
-
+            console.log(result, 'result');
             // 결과 반환
             return res.status(200).json(result.rows || true);
         } else {
