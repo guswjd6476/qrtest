@@ -54,26 +54,33 @@ const Student: React.FC = () => {
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault(); // 폼 제출 시 새로고침 방지
         try {
-            // 서버로 이름 전송
-            const response = await axios.get('/api/selectStudentMy', { params: { name } });
-            if (response.status === 200) {
-                const result: any[] = response.data; // 서버에서 받은 결과
-                setAttendance(generatePuzzle(result)); // 출석 여부 설정
-                setShowAttendance(true); // 출석 여부 표시
-                if (result[0].length > 1) {
-                    setStepTrue(true);
+            // 두 개의 API 호출을 병렬로 실행
+            const [response1, response2] = await Promise.all([
+                axios.get('/api/selectStudentMy', { params: { name } }),
+                axios.get('/api/selectStudentMy2', { params: { name } }),
+            ]);
+
+            // 첫 번째 API 응답 처리
+            if (response1.status === 200) {
+                const result1: any[] = response1.data; // 서버에서 받은 결과
+                setAttendance(generatePuzzle(result1)); // 출석 여부 설정
+                if (result1.length > 1) {
+                    setStep1(true);
                 }
             } else {
-                console.error('서버 오류:', response.status);
+                console.error('첫 번째 서버 오류:', response1.status);
             }
-            const response2 = await axios.get('/api/selectStudentMy2', { params: { name } });
+
+            // 두 번째 API 응답 처리
             if (response2.status === 200) {
-                const result: any[] = response2.data; // 서버에서 받은 결과
-                setAttendance2(generatePuzzle(result)); // 출석 여부 설정
-                setShowAttendance(true); // 출석 여부 표시
+                const result2: any[] = response2.data; // 서버에서 받은 결과
+                setAttendance2(generatePuzzle(result2)); // 출석 여부 설정
             } else {
-                console.error('서버 오류:', response2.status);
+                console.error('두 번째 서버 오류:', response2.status);
             }
+
+            // 출석 여부 표시
+            setShowAttendance(true);
         } catch (error) {
             console.error('오류 발생:', error);
             // 오류 처리
