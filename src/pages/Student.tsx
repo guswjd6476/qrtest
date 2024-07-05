@@ -1,6 +1,6 @@
 import React, { useState, useEffect, FormEvent } from 'react';
 import axios from 'axios';
-
+import { useRouter } from 'next/router';
 interface PuzzlePieceProps {
     filled: boolean;
 }
@@ -43,7 +43,14 @@ const Student: React.FC = () => {
     const [showAttendance, setShowAttendance] = useState<boolean>(false);
     const [step1, setStep1] = useState<boolean>(false);
     const [step2, setStep2] = useState<boolean>(false);
+    const [stepTrue, setStepTrue] = useState<boolean>(false);
 
+    const router = useRouter();
+
+    // Function to navigate to the admin page
+    const goToHome = () => {
+        router.push('/');
+    };
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault(); // 폼 제출 시 새로고침 방지
         try {
@@ -53,6 +60,9 @@ const Student: React.FC = () => {
                 const result: any[] = response.data; // 서버에서 받은 결과
                 setAttendance(generatePuzzle(result)); // 출석 여부 설정
                 setShowAttendance(true); // 출석 여부 표시
+                if (result.length > 1) {
+                    setStepTrue(true);
+                }
             } else {
                 console.error('서버 오류:', response.status);
             }
@@ -122,7 +132,7 @@ const Student: React.FC = () => {
             ) : (
                 // 출석 여부 표시
                 <>
-                    {attendance && attendance.length > 1 && !step1 && !step2 ? (
+                    {attendance && attendance.length > 1 && !step1 && !step2 && stepTrue ? (
                         <div className="flex">
                             <button
                                 onClick={() => {
@@ -141,7 +151,7 @@ const Student: React.FC = () => {
                         </div>
                     ) : null}
 
-                    {showAttendance && step1 && (
+                    {showAttendance && step1 && stepTrue && (
                         <div>
                             {attendance.map((row: boolean[], rowIndex: number) => (
                                 <div key={rowIndex} className="flex">
@@ -159,7 +169,7 @@ const Student: React.FC = () => {
                             </button>
                         </div>
                     )}
-                    {showAttendance && step2 && (
+                    {showAttendance && step2 && stepTrue && (
                         <div>
                             {attendance2.map((row: boolean[], rowIndex: number) => (
                                 <div key={rowIndex} className="flex">
@@ -170,14 +180,14 @@ const Student: React.FC = () => {
                             ))}
                             <button
                                 onClick={() => {
-                                    setStep1(false);
+                                    setStep2(false);
                                 }}
                             >
                                 뒤로가기
                             </button>
                         </div>
                     )}
-                    {showAttendance && !step2 && !step1 && (
+                    {showAttendance && !step2 && !step1 && !stepTrue && (
                         <div>
                             {attendance2.map((row: boolean[], rowIndex: number) => (
                                 <div key={rowIndex} className="flex">
