@@ -60,7 +60,7 @@ const Student: React.FC = () => {
                 const result: any[] = response.data; // 서버에서 받은 결과
                 setAttendance(generatePuzzle(result)); // 출석 여부 설정
                 setShowAttendance(true); // 출석 여부 표시
-                if (result.length > 1) {
+                if (result[0].length > 1) {
                     setStepTrue(true);
                 }
             } else {
