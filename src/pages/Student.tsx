@@ -65,7 +65,7 @@ const Student: React.FC = () => {
                 const result1: any[] = response1.data; // 서버에서 받은 결과
                 setAttendance(generatePuzzle(result1)); // 출석 여부 설정
                 if (result1.length > 1) {
-                    setStep1(true);
+                    setStepTrue(true);
                 }
             } else {
                 console.error('첫 번째 서버 오류:', response1.status);
