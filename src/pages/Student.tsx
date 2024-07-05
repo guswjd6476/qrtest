@@ -38,8 +38,11 @@ const PuzzlePiece: React.FC<PuzzlePieceProps> = ({ filled }) => {
 
 const Student: React.FC = () => {
     const [attendance, setAttendance] = useState<boolean[][]>([]); // 출석 여부 배열
+    const [attendance2, setAttendance2] = useState<boolean[][]>([]);
     const [name, setName] = useState<string>(''); // 이름 입력 상태
-    const [showAttendance, setShowAttendance] = useState<boolean>(false); // 출석 여부 표시 상태
+    const [showAttendance, setShowAttendance] = useState<boolean>(false);
+    const [step1, setStep1] = useState<boolean>(false);
+    const [step2, setStep2] = useState<boolean>(false);
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault(); // 폼 제출 시 새로고침 방지
@@ -52,6 +55,14 @@ const Student: React.FC = () => {
                 setShowAttendance(true); // 출석 여부 표시
             } else {
                 console.error('서버 오류:', response.status);
+            }
+            const response2 = await axios.get('/api/selectStudentMy2', { params: { name } });
+            if (response2.status === 200) {
+                const result: any[] = response2.data; // 서버에서 받은 결과
+                setAttendance2(generatePuzzle(result)); // 출석 여부 설정
+                setShowAttendance(true); // 출석 여부 표시
+            } else {
+                console.error('서버 오류:', response2.status);
             }
         } catch (error) {
             console.error('오류 발생:', error);
@@ -111,15 +122,72 @@ const Student: React.FC = () => {
             ) : (
                 // 출석 여부 표시
                 <>
-                    {showAttendance &&
-                        // 퍼즐 조각 표시
-                        attendance.map((row: boolean[], rowIndex: number) => (
-                            <div key={rowIndex} className="flex">
-                                {row.map((filled: boolean, colIndex: number) => (
-                                    <PuzzlePiece key={colIndex} filled={filled} />
-                                ))}
-                            </div>
-                        ))}
+                    {attendance && attendance.length > 1 && !step1 && !step2 ? (
+                        <div className="flex">
+                            <button
+                                onClick={() => {
+                                    setStep1(true);
+                                }}
+                            >
+                                STEP1
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setStep2(true);
+                                }}
+                            >
+                                STEP2
+                            </button>
+                        </div>
+                    ) : null}
+
+                    {showAttendance && step1 && (
+                        <div>
+                            {attendance.map((row: boolean[], rowIndex: number) => (
+                                <div key={rowIndex} className="flex">
+                                    {row.map((filled: boolean, colIndex: number) => (
+                                        <PuzzlePiece key={colIndex} filled={filled} />
+                                    ))}
+                                </div>
+                            ))}
+                            <button
+                                onClick={() => {
+                                    setStep1(false);
+                                }}
+                            >
+                                뒤로가기
+                            </button>
+                        </div>
+                    )}
+                    {showAttendance && step2 && (
+                        <div>
+                            {attendance2.map((row: boolean[], rowIndex: number) => (
+                                <div key={rowIndex} className="flex">
+                                    {row.map((filled: boolean, colIndex: number) => (
+                                        <PuzzlePiece key={colIndex} filled={filled} />
+                                    ))}
+                                </div>
+                            ))}
+                            <button
+                                onClick={() => {
+                                    setStep1(false);
+                                }}
+                            >
+                                뒤로가기
+                            </button>
+                        </div>
+                    )}
+                    {showAttendance && !step2 && !step1 && (
+                        <div>
+                            {attendance2.map((row: boolean[], rowIndex: number) => (
+                                <div key={rowIndex} className="flex">
+                                    {row.map((filled: boolean, colIndex: number) => (
+                                        <PuzzlePiece key={colIndex} filled={filled} />
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </>
             )}
         </div>
