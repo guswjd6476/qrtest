@@ -42,6 +42,7 @@ const Student: React.FC = () => {
     const [name, setName] = useState<string>(''); // 이름 입력 상태
     const [showAttendance, setShowAttendance] = useState<boolean>(false);
     const [step1, setStep1] = useState<boolean>(false);
+    const [step1result, setStep1result] = useState<boolean[][]>([]);
     const [step2, setStep2] = useState<boolean>(false);
     const [stepTrue, setStepTrue] = useState<boolean>(false);
 
@@ -62,8 +63,14 @@ const Student: React.FC = () => {
 
             // 첫 번째 API 응답 처리
             if (response1.status === 200) {
-                const result1: any[] = response1.data; // 서버에서 받은 결과
-                console.log(result1, 'resut1');
+                const result1: any[] = response1.data;
+                const uniqueData = Object.values(
+                    result1.reduce((acc, item) => {
+                        acc[item.indexnum] = item;
+                        return acc;
+                    }, {})
+                ); // 서버에서 받은 결과
+                setStep1result(uniqueData);
                 setAttendance(generatePuzzle(result1)); // 출석 여부 설정
                 if (result1.length >= 1) {
                     setStepTrue(true);
@@ -161,7 +168,7 @@ const Student: React.FC = () => {
                         </div>
                     ) : null}
 
-                    {step1 && attendance.length < 16 && (
+                    {step1 && step1result.length < 16 && (
                         <div>
                             {attendance.map((row: boolean[], rowIndex: number) => (
                                 <div key={rowIndex} className="flex">
@@ -180,7 +187,7 @@ const Student: React.FC = () => {
                             </button>
                         </div>
                     )}
-                    {step1 && attendance.length >= 16 && (
+                    {step1 && step1result.length >= 16 && (
                         <div>
                             <div className="w-44 h-44">
                                 <img
@@ -189,7 +196,7 @@ const Student: React.FC = () => {
                                     alt="Description of the image"
                                 />
                             </div>
-                            <div>고생 하셨습니다 :)</div>
+                            <div>{name}님 고생 하셨습니다 :)</div>
                             <button
                                 onClick={() => {
                                     setStep1(false);
