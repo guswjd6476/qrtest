@@ -140,7 +140,7 @@ const Student: React.FC = () => {
             ) : (
                 // 출석 여부 표시
                 <>
-                    {attendance && !step1 && !step2 && stepTrue ? (
+                    {attendance && attendance.length > 1 && !step1 && !step2 && stepTrue ? (
                         <div className="flex">
                             <button
                                 onClick={() => {
@@ -159,7 +159,7 @@ const Student: React.FC = () => {
                         </div>
                     ) : null}
 
-                    {showAttendance && step1 && stepTrue && (
+                    {step1 && (
                         <div>
                             {attendance.map((row: boolean[], rowIndex: number) => (
                                 <div key={rowIndex} className="flex">
@@ -177,7 +177,8 @@ const Student: React.FC = () => {
                             </button>
                         </div>
                     )}
-                    {showAttendance && step2 && stepTrue && (
+
+                    {step2 && (
                         <div>
                             {attendance2.map((row: boolean[], rowIndex: number) => (
                                 <div key={rowIndex} className="flex">
@@ -195,7 +196,8 @@ const Student: React.FC = () => {
                             </button>
                         </div>
                     )}
-                    {showAttendance && !step2 && !step1 && !stepTrue && (
+
+                    {!step1 && !step2 && !stepTrue && (
                         <div>
                             {attendance2.map((row: boolean[], rowIndex: number) => (
                                 <div key={rowIndex} className="flex">
