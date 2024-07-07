@@ -1,8 +1,16 @@
 import React, { useState, useEffect, FormEvent } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+
 interface PuzzlePieceProps {
     filled: boolean;
+}
+
+interface StudentData {
+    id: number;
+    date: string;
+    name: string;
+    indexnum: number;
 }
 
 const PuzzlePiece: React.FC<PuzzlePieceProps> = ({ filled }) => {
@@ -42,7 +50,7 @@ const Student: React.FC = () => {
     const [name, setName] = useState<string>(''); // 이름 입력 상태
     const [showAttendance, setShowAttendance] = useState<boolean>(false);
     const [step1, setStep1] = useState<boolean>(false);
-    const [step1result, setStep1result] = useState<boolean[][]>([]);
+    const [step1result, setStep1result] = useState<StudentData[]>([]);
     const [step2, setStep2] = useState<boolean>(false);
     const [stepTrue, setStepTrue] = useState<boolean>(false);
 
@@ -52,6 +60,7 @@ const Student: React.FC = () => {
     const goToHome = () => {
         router.push('/');
     };
+
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault(); // 폼 제출 시 새로고침 방지
         try {
@@ -63,16 +72,16 @@ const Student: React.FC = () => {
 
             // 첫 번째 API 응답 처리
             if (response1.status === 200) {
-                const result1: any[] = response1.data;
-                const uniqueData = Object.values(
+                const result1: StudentData[] = response1.data;
+                const uniqueData: StudentData[] = Object.values(
                     result1.reduce((acc, item) => {
                         acc[item.indexnum] = item;
                         return acc;
-                    }, {})
+                    }, {} as { [key: number]: StudentData })
                 ); // 서버에서 받은 결과
                 setStep1result(uniqueData);
-                setAttendance(generatePuzzle(result1)); // 출석 여부 설정
-                if (result1.length >= 1) {
+                setAttendance(generatePuzzle(uniqueData)); // 출석 여부 설정
+                if (uniqueData.length >= 1) {
                     setStepTrue(true);
                 }
             } else {
@@ -81,7 +90,7 @@ const Student: React.FC = () => {
 
             // 두 번째 API 응답 처리
             if (response2.status === 200) {
-                const result2: any[] = response2.data; // 서버에서 받은 결과
+                const result2: StudentData[] = response2.data; // 서버에서 받은 결과
                 setAttendance2(generatePuzzle(result2)); // 출석 여부 설정
             } else {
                 console.error('두 번째 서버 오류:', response2.status);
@@ -94,9 +103,11 @@ const Student: React.FC = () => {
             // 오류 처리
         }
     };
+
     console.log(stepTrue, 'stepTrue', step1, 'step1', step2, 'step2');
+
     // 출석 데이터를 기반으로 퍼즐 조각 생성
-    const generatePuzzle = (result: any[]): boolean[][] => {
+    const generatePuzzle = (result: StudentData[]): boolean[][] => {
         // 4x4 크기의 출석 여부 배열 생성
         const attendanceArray: boolean[][] = [];
         const puzzleOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
