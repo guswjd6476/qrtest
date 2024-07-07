@@ -140,12 +140,13 @@ const Student: React.FC = () => {
             ) : (
                 // 출석 여부 표시
                 <>
-                    {attendance && attendance.length > 1 && !step1 && !step2 && stepTrue ? (
+                    {attendance && attendance.length >= 1 && !step1 && !step2 && stepTrue ? (
                         <div className="flex">
                             <button
                                 onClick={() => {
                                     setStep1(true);
                                 }}
+                                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
                             >
                                 STEP1
                             </button>
@@ -153,13 +154,14 @@ const Student: React.FC = () => {
                                 onClick={() => {
                                     setStep2(true);
                                 }}
+                                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
                             >
                                 STEP2
                             </button>
                         </div>
                     ) : null}
 
-                    {step1 && (
+                    {step1 && attendance.length < 16 && (
                         <div>
                             {attendance.map((row: boolean[], rowIndex: number) => (
                                 <div key={rowIndex} className="flex">
@@ -172,12 +174,32 @@ const Student: React.FC = () => {
                                 onClick={() => {
                                     setStep1(false);
                                 }}
+                                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
                             >
                                 뒤로가기
                             </button>
                         </div>
                     )}
-
+                    {step1 && attendance.length >= 16 && (
+                        <div>
+                            <div className="w-44 h-44">
+                                <img
+                                    className="object-cover w-full h-full"
+                                    src="/whoiam.jpg"
+                                    alt="Description of the image"
+                                />
+                            </div>
+                            <div>고생 하셨습니다 :)</div>
+                            <button
+                                onClick={() => {
+                                    setStep1(false);
+                                }}
+                                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                            >
+                                뒤로가기
+                            </button>
+                        </div>
+                    )}
                     {step2 && (
                         <div>
                             {attendance2.map((row: boolean[], rowIndex: number) => (
@@ -191,6 +213,7 @@ const Student: React.FC = () => {
                                 onClick={() => {
                                     setStep2(false);
                                 }}
+                                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
                             >
                                 뒤로가기
                             </button>
@@ -206,6 +229,12 @@ const Student: React.FC = () => {
                                     ))}
                                 </div>
                             ))}
+                            <button
+                                onClick={goToHome}
+                                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                            >
+                                홈
+                            </button>
                         </div>
                     )}
                 </>
