@@ -52,6 +52,7 @@ const Student: React.FC = () => {
     const [step1, setStep1] = useState<boolean>(false);
     const [step1result, setStep1result] = useState<StudentData[]>([]);
     const [step2, setStep2] = useState<boolean>(false);
+    const [step2result, setStep2result] = useState<StudentData[]>([]);
     const [stepTrue, setStepTrue] = useState<boolean>(false);
 
     const router = useRouter();
@@ -90,8 +91,16 @@ const Student: React.FC = () => {
 
             // 두 번째 API 응답 처리
             if (response2.status === 200) {
-                const result2: StudentData[] = response2.data; // 서버에서 받은 결과
-                setAttendance2(generatePuzzle(result2)); // 출석 여부 설정
+                const result2: StudentData[] = response2.data;
+
+                const uniqueData: StudentData[] = Object.values(
+                    result2.reduce((acc, item) => {
+                        acc[item.indexnum] = item;
+                        return acc;
+                    }, {} as { [key: number]: StudentData })
+                ); // 서버에서 받은 결과
+                setStep2result(uniqueData);
+                setAttendance2(generatePuzzle(result2));
             } else {
                 console.error('두 번째 서버 오류:', response2.status);
             }
@@ -218,7 +227,7 @@ const Student: React.FC = () => {
                             </button>
                         </div>
                     )}
-                    {step2 && (
+                    {step2 && step2result.length < 16 && (
                         <div>
                             {attendance2.map((row: boolean[], rowIndex: number) => (
                                 <div key={rowIndex} className="flex">
@@ -237,7 +246,26 @@ const Student: React.FC = () => {
                             </button>
                         </div>
                     )}
-
+                    {step2 && step2result.length >= 16 && (
+                        <div>
+                            <div className="w-44 h-44">
+                                <img
+                                    className="object-cover w-full h-full"
+                                    src="/whoiam.jpg"
+                                    alt="Description of the image"
+                                />
+                            </div>
+                            <div>{name}님 고생 하셨습니다 :)</div>
+                            <button
+                                onClick={() => {
+                                    setStep1(false);
+                                }}
+                                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                            >
+                                뒤로가기
+                            </button>
+                        </div>
+                    )}
                     {!step1 && !step2 && !stepTrue && (
                         <div>
                             {attendance2.map((row: boolean[], rowIndex: number) => (

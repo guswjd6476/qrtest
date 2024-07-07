@@ -26,8 +26,6 @@ const PuzzlePiece: React.FC<PuzzlePieceProps> = ({ filled }) => {
 
     return (
         <div className="relative w-20 h-20 border border-black rounded-md">
-            {' '}
-            {/* 테두리를 둥글게 처리 */}
             {filled ? drawOutline() : null} {/* 퍼즐이 채워진 경우에만 윤곽을 그림 */}
             {filled ? (
                 <div className="absolute inset-0 bg-blue-500" />
@@ -38,6 +36,13 @@ const PuzzlePiece: React.FC<PuzzlePieceProps> = ({ filled }) => {
     );
 };
 
+interface StudentData {
+    id: number;
+    date: string;
+    name: string;
+    indexnum: number;
+}
+
 const Iam: React.FC = () => {
     const router = useRouter();
     const { date } = router.query;
@@ -45,12 +50,16 @@ const Iam: React.FC = () => {
     const [attendance, setAttendance] = useState<boolean[][]>([]); // 출석 여부 배열
     const [name, setName] = useState<string>(''); // 이름 입력 상태
     const [uidList, setUidList] = useState<any>(null); // uidList의 초기값을 null로 설정
-    const [showAttendance, setShowAttendance] = useState<boolean>(false); // 출석 여부 표시 상태
+    const [showAttendance, setShowAttendance] = useState<boolean>(false);
+    const [stepResult, setStepResult] = useState<StudentData[]>([]);
+
+    const goToHome = () => {
+        router.push('/');
+    };
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // 서버로 이름 전송
                 const response = await axios.get('/api/selectUid');
                 if (response.status === 200) {
                     const result = response.data;
@@ -60,7 +69,6 @@ const Iam: React.FC = () => {
                 }
             } catch (error) {
                 console.error('오류 발생:', error);
-                // 오류 처리
             }
         };
         fetchData();
@@ -75,12 +83,17 @@ const Iam: React.FC = () => {
         }
 
         try {
-            // 서버로 이름 전송
             const uid = uidList.indexnum;
             const response = await axios.post('/api/addName2', { name, uid });
             if (response.status === 200) {
-                const result = response.data; // 서버에서 받은 결과
-                console.log(result, '?result');
+                const result: StudentData[] = response.data;
+                const uniqueData: StudentData[] = Object.values(
+                    result.reduce((acc, item) => {
+                        acc[item.indexnum] = item;
+                        return acc;
+                    }, {} as { [key: number]: StudentData })
+                );
+                setStepResult(uniqueData);
                 setAttendance(generatePuzzle(result)); // 출석 여부 설정
                 setShowAttendance(true); // 출석 여부 표시
             } else {
@@ -88,13 +101,11 @@ const Iam: React.FC = () => {
             }
         } catch (error) {
             console.error('오류 발생:', error);
-            // 오류 처리
         }
     };
-    const generatePuzzle = (result: any[]) => {
-        // 4x4 크기의 출석 여부 배열 생성
+
+    const generatePuzzle = (result: StudentData[]): boolean[][] => {
         const attendanceArray: boolean[][] = [];
-        //const puzzleOrder = [1, 16, 2, 3, 12, 13, 4, 8, 9, 10, 11, 14, 15, 5, 6, 7];
         const puzzleOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
         for (let i = 0; i < 4; i++) {
@@ -105,7 +116,6 @@ const Iam: React.FC = () => {
             attendanceArray.push(row);
         }
 
-        // 출석 데이터를 배열에 반영
         result.forEach((data) => {
             const indexnum = data.indexnum;
             const index = puzzleOrder.indexOf(indexnum);
@@ -118,6 +128,7 @@ const Iam: React.FC = () => {
 
         return attendanceArray;
     };
+
     return (
         <div className="p-4">
             {!showAttendance ? (
@@ -142,15 +153,40 @@ const Iam: React.FC = () => {
             ) : (
                 // 출석 여부 표시
                 <>
-                    {showAttendance &&
-                        // 퍼즐 조각 표시
+                    {showAttendance && stepResult.length < 16 ? (
                         attendance.map((row: boolean[], rowIndex: number) => (
                             <div key={rowIndex} className="flex">
                                 {row.map((filled: boolean, colIndex: number) => (
                                     <PuzzlePiece key={colIndex} filled={filled} />
                                 ))}
                             </div>
-                        ))}
+                        ))
+                    ) : showAttendance && stepResult.length >= 16 ? (
+                        <div>
+                            <div className="w-44 h-44">
+                                <img
+                                    className="object-cover w-full h-full"
+                                    src="/whoiam.jpg"
+                                    alt="Description of the image"
+                                />
+                            </div>
+                            <div>{name}님 고생 하셨습니다 :)</div>
+                            <button
+                                onClick={goToHome}
+                                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                            >
+                                뒤로가기
+                            </button>
+                        </div>
+                    ) : null}
+                    {showAttendance && (
+                        <button
+                            onClick={goToHome}
+                            className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                        >
+                            홈
+                        </button>
+                    )}
                 </>
             )}
         </div>
