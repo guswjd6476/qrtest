@@ -63,6 +63,7 @@ const Student: React.FC = () => {
             // 첫 번째 API 응답 처리
             if (response1.status === 200) {
                 const result1: any[] = response1.data; // 서버에서 받은 결과
+                console.log(result1, 'resut1');
                 setAttendance(generatePuzzle(result1)); // 출석 여부 설정
                 if (result1.length > 1) {
                     setStepTrue(true);
@@ -139,7 +140,7 @@ const Student: React.FC = () => {
             ) : (
                 // 출석 여부 표시
                 <>
-                    {attendance && attendance.length > 1 && !step1 && !step2 && stepTrue ? (
+                    {attendance && !step1 && !step2 && stepTrue ? (
                         <div className="flex">
                             <button
                                 onClick={() => {
