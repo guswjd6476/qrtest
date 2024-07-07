@@ -87,7 +87,7 @@ const Student: React.FC = () => {
             // 오류 처리
         }
     };
-
+    console.log(stepTrue, 'stepTrue', step1, 'step1', step2, 'step2');
     // 출석 데이터를 기반으로 퍼즐 조각 생성
     const generatePuzzle = (result: any[]): boolean[][] => {
         // 4x4 크기의 출석 여부 배열 생성
