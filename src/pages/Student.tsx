@@ -56,12 +56,15 @@ const PuzzlePiece: React.FC<PuzzlePieceProps> = ({ filled }) => {
 const Student: React.FC = () => {
     const [attendance, setAttendance] = useState<boolean[][]>([]); // 출석 여부 배열
     const [attendance2, setAttendance2] = useState<boolean[][]>([]);
+    const [attendance3, setAttendance3] = useState<boolean[][]>([]);
     const [name, setName] = useState<string>(''); // 이름 입력 상태
     const [showAttendance, setShowAttendance] = useState<boolean>(false);
     const [step1, setStep1] = useState<boolean>(false);
     const [step1result, setStep1result] = useState<StudentData[]>([]);
     const [step2, setStep2] = useState<boolean>(false);
     const [step2result, setStep2result] = useState<StudentData[]>([]);
+    const [step3, setStep3] = useState<boolean>(false);
+    const [step3result, setStep3result] = useState<StudentData[]>([]);
     const [stepTrue, setStepTrue] = useState<boolean>(false);
 
     const router = useRouter();
@@ -75,9 +78,10 @@ const Student: React.FC = () => {
         event.preventDefault(); // 폼 제출 시 새로고침 방지
         try {
             // 두 개의 API 호출을 병렬로 실행
-            const [response1, response2] = await Promise.all([
+            const [response1, response2, response3] = await Promise.all([
                 axios.get('/api/selectStudentMy', { params: { name } }),
                 axios.get('/api/selectStudentMy2', { params: { name } }),
+                axios.get('/api/selectStudentMy3', { params: { name } }),
             ]);
 
             // 첫 번째 API 응답 처리
@@ -88,54 +92,55 @@ const Student: React.FC = () => {
                         acc[item.indexnum] = item;
                         return acc;
                     }, {} as { [key: number]: StudentData })
-                ); // 서버에서 받은 결과
+                );
                 setStep1result(uniqueData);
-                setAttendance(generatePuzzle(uniqueData)); // 출석 여부 설정
+                setAttendance(generatePuzzle(uniqueData, 4)); // 출석 여부 4x4로 설정
                 if (uniqueData.length >= 1) {
                     setStepTrue(true);
                 }
-            } else {
-                console.error('첫 번째 서버 오류:', response1.status);
             }
 
             // 두 번째 API 응답 처리
             if (response2.status === 200) {
                 const result2: StudentData[] = response2.data;
-
                 const uniqueData: StudentData[] = Object.values(
                     result2.reduce((acc, item) => {
                         acc[item.indexnum] = item;
                         return acc;
                     }, {} as { [key: number]: StudentData })
-                ); // 서버에서 받은 결과
+                );
                 setStep2result(uniqueData);
-                setAttendance2(generatePuzzle(result2));
-            } else {
-                console.error('두 번째 서버 오류:', response2.status);
+                setAttendance2(generatePuzzle(result2, 4)); // 출석 여부 4x4로 설정
+            }
+
+            // 세 번째 API 응답 처리
+            if (response3.status === 200) {
+                const result3: StudentData[] = response3.data;
+                const uniqueData: StudentData[] = Object.values(
+                    result3.reduce((acc, item) => {
+                        acc[item.indexnum] = item;
+                        return acc;
+                    }, {} as { [key: number]: StudentData })
+                );
+                setStep3result(uniqueData);
+                setAttendance3(generatePuzzle(result3, 6)); // 출석 여부 6x6로 설정
             }
 
             // 출석 여부 표시
             setShowAttendance(true);
         } catch (error) {
             console.error('오류 발생:', error);
-            // 오류 처리
         }
     };
-
-    console.log(stepTrue, 'stepTrue', step1, 'step1', step2, 'step2');
-
     // 출석 데이터를 기반으로 퍼즐 조각 생성
-    const generatePuzzle = (result: StudentData[]): boolean[][] => {
-        // 4x4 크기의 출석 여부 배열 생성
+    const generatePuzzle = (result: StudentData[], size: number): boolean[][] => {
+        // size 크기의 출석 여부 배열 생성
         const attendanceArray: boolean[][] = [];
-        const puzzleOrder = [
-            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-            30, 31, 32, 33, 34, 35, 36,
-        ];
+        const puzzleOrder = Array.from({ length: size * size }, (_, i) => i + 1);
 
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < size; i++) {
             const row: boolean[] = [];
-            for (let j = 0; j < 6; j++) {
+            for (let j = 0; j < size; j++) {
                 row.push(false); // 초기값은 모두 출석하지 않음(false)
             }
             attendanceArray.push(row);
@@ -146,15 +151,14 @@ const Student: React.FC = () => {
             const indexnum = data.indexnum;
             const index = puzzleOrder.indexOf(indexnum);
             if (index !== -1) {
-                const row = Math.floor(index / 6);
-                const col = index % 6;
+                const row = Math.floor(index / size);
+                const col = index % size;
                 attendanceArray[row][col] = true; // 해당 위치에 출석 여부 표시
             }
         });
 
         return attendanceArray;
     };
-
     return (
         <div className="p-4">
             {!showAttendance ? (
@@ -182,13 +186,19 @@ const Student: React.FC = () => {
             ) : (
                 // 출석 여부 표시
                 <>
-                    {attendance && attendance.length >= 1 && !step1 && !step2 && stepTrue ? (
+                    {attendance && attendance.length >= 1 && !step1 && !step2 && !step3 && stepTrue ? (
                         <div className="flex">
+                            <button
+                                onClick={goToHome}
+                                className="mr-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                            >
+                                홈
+                            </button>
                             <button
                                 onClick={() => {
                                     setStep1(true);
                                 }}
-                                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                                className="mr-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
                             >
                                 STEP1
                             </button>
@@ -196,9 +206,17 @@ const Student: React.FC = () => {
                                 onClick={() => {
                                     setStep2(true);
                                 }}
-                                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                                className=" mr-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
                             >
                                 STEP2
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setStep3(true);
+                                }}
+                                className=" mr-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                            >
+                                STEP3
                             </button>
                         </div>
                     ) : null}
@@ -222,7 +240,7 @@ const Student: React.FC = () => {
                                 onClick={() => {
                                     setStep1(false);
                                 }}
-                                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                                className="bg-blue-500 mt-2 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
                             >
                                 뒤로가기
                             </button>
@@ -242,13 +260,13 @@ const Student: React.FC = () => {
                                 onClick={() => {
                                     setStep1(false);
                                 }}
-                                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                                className="mt-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
                             >
                                 뒤로가기
                             </button>
                         </div>
                     )}
-                    {step2 && step2result.length < 32 && (
+                    {step2 && step2result.length < 16 && (
                         <div>
                             {attendance2.map((row: boolean[], rowIndex: number) => (
                                 <div
@@ -267,13 +285,13 @@ const Student: React.FC = () => {
                                 onClick={() => {
                                     setStep2(false);
                                 }}
-                                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                                className="mt-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
                             >
                                 뒤로가기
                             </button>
                         </div>
                     )}
-                    {step2 && step2result.length >= 32 && (
+                    {step2 && step2result.length >= 16 && (
                         <div>
                             <div className="w-44 h-44">
                                 <img
@@ -287,13 +305,60 @@ const Student: React.FC = () => {
                                 onClick={() => {
                                     setStep1(false);
                                 }}
-                                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                                className="mt-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
                             >
                                 뒤로가기
                             </button>
                         </div>
                     )}
-                    {!step1 && !step2 && !stepTrue && (
+
+                    {step3 && step3result.length < 36 && (
+                        <div>
+                            {attendance3.map((row: boolean[], rowIndex: number) => (
+                                <div
+                                    key={rowIndex}
+                                    className="flex"
+                                >
+                                    {row.map((filled: boolean, colIndex: number) => (
+                                        <PuzzlePiece
+                                            key={colIndex}
+                                            filled={filled}
+                                        />
+                                    ))}
+                                </div>
+                            ))}
+                            <button
+                                onClick={() => {
+                                    setStep3(false);
+                                }}
+                                className="mt-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                            >
+                                뒤로가기
+                            </button>
+                        </div>
+                    )}
+                    {step3 && step3result.length >= 36 && (
+                        <div>
+                            <div className="w-44 h-44">
+                                <img
+                                    className="object-cover w-full h-full"
+                                    src="/whoiam.jpg"
+                                    alt="Description of the image"
+                                />
+                            </div>
+                            <div>{name}님 고생 하셨습니다 :)</div>
+                            <button
+                                onClick={() => {
+                                    setStep3(false);
+                                }}
+                                className="mt-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                            >
+                                뒤로가기
+                            </button>
+                        </div>
+                    )}
+
+                    {!step1 && !step2 && !step3 && !stepTrue && (
                         <div>
                             {attendance2.map((row: boolean[], rowIndex: number) => (
                                 <div
@@ -310,7 +375,7 @@ const Student: React.FC = () => {
                             ))}
                             <button
                                 onClick={goToHome}
-                                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                                className="mt-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
                             >
                                 홈
                             </button>

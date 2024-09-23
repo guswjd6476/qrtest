@@ -79,7 +79,10 @@ const Admin: React.FC = () => {
             {!isLoggedIn ? (
                 <>
                     <div className="mb-4">
-                        <label htmlFor="username" className="block text-gray-700">
+                        <label
+                            htmlFor="username"
+                            className="block text-gray-700"
+                        >
                             아이디
                         </label>
                         <input
@@ -93,7 +96,10 @@ const Admin: React.FC = () => {
                         />
                     </div>
                     <div className="mb-4">
-                        <label htmlFor="password" className="block text-gray-700">
+                        <label
+                            htmlFor="password"
+                            className="block text-gray-700"
+                        >
                             비밀번호
                         </label>
                         <input
@@ -110,7 +116,10 @@ const Admin: React.FC = () => {
                         <></>
                     ) : (
                         <div className="mb-4">
-                            <label htmlFor="password" className="block text-gray-700">
+                            <label
+                                htmlFor="password"
+                                className="block text-gray-700"
+                            >
                                 이름
                             </label>
                             <input
@@ -143,7 +152,7 @@ const Admin: React.FC = () => {
             ) : (
                 <>
                     {/* 출석 현황 보기 및 Qrcode 페이지로 이동 버튼 */}
-                    <div className="mt-6 w-full flex justify-between">
+                    <div className="mt-6 w-full flex flex-wrap justify-between">
                         <button
                             onClick={() => router.push('/Attendance')}
                             className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
@@ -155,6 +164,12 @@ const Admin: React.FC = () => {
                             className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
                         >
                             출석현황보기(합반후)
+                        </button>
+                        <button
+                            onClick={() => router.push('/Attendance3')}
+                            className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                        >
+                            출석현황보기(36칸 만든 후)
                         </button>
                         <button
                             onClick={() => router.push('/Qrcode')}

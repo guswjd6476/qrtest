@@ -8,7 +8,6 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-    console.log('확인확인');
     const body = await req.json();
     createPost(body.name);
 
