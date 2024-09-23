@@ -18,8 +18,17 @@ const PuzzlePiece: React.FC<PuzzlePieceProps> = ({ filled }) => {
         };
 
         return (
-            <svg className="absolute inset-0" viewBox="0 0 100 100">
-                <rect x="5" y="5" width="90" height="90" style={outlineStyle} />
+            <svg
+                className="absolute inset-0"
+                viewBox="0 0 100 100"
+            >
+                <rect
+                    x="5"
+                    y="5"
+                    width="90"
+                    height="90"
+                    style={outlineStyle}
+                />
             </svg>
         );
     };
@@ -106,11 +115,14 @@ const Iam: React.FC = () => {
 
     const generatePuzzle = (result: StudentData[]): boolean[][] => {
         const attendanceArray: boolean[][] = [];
-        const puzzleOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+        const puzzleOrder = [
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+            30, 31, 32, 33, 34, 35, 36,
+        ];
 
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 6; i++) {
             const row: boolean[] = [];
-            for (let j = 0; j < 4; j++) {
+            for (let j = 0; j < 6; j++) {
                 row.push(false); // 초기값은 모두 출석하지 않음(false)
             }
             attendanceArray.push(row);
@@ -120,8 +132,8 @@ const Iam: React.FC = () => {
             const indexnum = data.indexnum;
             const index = puzzleOrder.indexOf(indexnum);
             if (index !== -1) {
-                const row = Math.floor(index / 4);
-                const col = index % 4;
+                const row = Math.floor(index / 6);
+                const col = index % 6;
                 attendanceArray[row][col] = true; // 해당 위치에 출석 여부 표시
             }
         });
@@ -133,7 +145,10 @@ const Iam: React.FC = () => {
         <div className="p-4">
             {!showAttendance ? (
                 // 이름 입력 폼
-                <form onSubmit={handleSubmit} className="mb-4">
+                <form
+                    onSubmit={handleSubmit}
+                    className="mb-4"
+                >
                     <label className="block mb-2">
                         이름:
                         <input
@@ -155,9 +170,15 @@ const Iam: React.FC = () => {
                 <>
                     {showAttendance && stepResult.length < 16 ? (
                         attendance.map((row: boolean[], rowIndex: number) => (
-                            <div key={rowIndex} className="flex">
+                            <div
+                                key={rowIndex}
+                                className="flex"
+                            >
                                 {row.map((filled: boolean, colIndex: number) => (
-                                    <PuzzlePiece key={colIndex} filled={filled} />
+                                    <PuzzlePiece
+                                        key={colIndex}
+                                        filled={filled}
+                                    />
                                 ))}
                             </div>
                         ))

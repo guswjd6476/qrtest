@@ -24,7 +24,7 @@ export default function Attendance() {
                         if (!accumulator[student.name]) {
                             accumulator[student.name] = {
                                 name: student.name,
-                                attendance: Array(16).fill({ attended: false, dateTime: '' }), // 16회차까지의 출석 여부와 날짜를 초기화합니다.
+                                attendance: Array(32).fill({ attended: false, dateTime: '' }), // 32회차까지의 출석 여부와 날짜를 초기화합니다.
                             };
                         }
                         accumulator[student.name].attendance[student.indexnum - 1] = {
@@ -53,8 +53,11 @@ export default function Attendance() {
                     <thead>
                         <tr>
                             <th className="px-4 py-2"></th>
-                            {Array.from({ length: 16 }, (_, index) => (
-                                <th key={index} className="px-4 py-2">
+                            {Array.from({ length: 32 }, (_, index) => (
+                                <th
+                                    key={index}
+                                    className="px-4 py-2"
+                                >
                                     {index + 1}회차
                                 </th>
                             ))}

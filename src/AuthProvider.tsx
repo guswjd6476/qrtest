@@ -15,10 +15,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
-            // Token exists, set isLoggedIn to true
             setIsLoggedIn(true); // true로 설정
         } else {
-            // Token doesn't exist, set isLoggedIn to false
             setIsLoggedIn(false); // false로 설정
         }
     }, []);
