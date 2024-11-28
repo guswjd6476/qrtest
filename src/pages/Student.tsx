@@ -186,7 +186,7 @@ const Student: React.FC = () => {
             ) : (
                 // 출석 여부 표시
                 <>
-                    {attendance && attendance.length >= 1 && !step1 && !step2 && !step3 && stepTrue ? (
+                    {attendance && attendance.length >= 1 && stepTrue ? (
                         <div className="flex">
                             <button
                                 onClick={goToHome}
