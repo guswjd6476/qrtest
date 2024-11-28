@@ -186,40 +186,38 @@ const Student: React.FC = () => {
             ) : (
                 // 출석 여부 표시
                 <>
-                    {attendance && attendance.length >= 1 && stepTrue ? (
-                        <div className="flex">
-                            <button
-                                onClick={goToHome}
-                                className="mr-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
-                            >
-                                홈
-                            </button>
-                            <button
-                                onClick={() => {
-                                    setStep1(true);
-                                }}
-                                className="mr-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
-                            >
-                                STEP1
-                            </button>
-                            <button
-                                onClick={() => {
-                                    setStep2(true);
-                                }}
-                                className=" mr-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
-                            >
-                                STEP2
-                            </button>
-                            <button
-                                onClick={() => {
-                                    setStep3(true);
-                                }}
-                                className=" mr-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
-                            >
-                                STEP3
-                            </button>
-                        </div>
-                    ) : null}
+                    <div className="flex">
+                        <button
+                            onClick={goToHome}
+                            className="mr-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                        >
+                            홈
+                        </button>
+                        <button
+                            onClick={() => {
+                                setStep1(true);
+                            }}
+                            className="mr-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                        >
+                            STEP1
+                        </button>
+                        <button
+                            onClick={() => {
+                                setStep2(true);
+                            }}
+                            className=" mr-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                        >
+                            STEP2
+                        </button>
+                        <button
+                            onClick={() => {
+                                setStep3(true);
+                            }}
+                            className=" mr-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                        >
+                            STEP3
+                        </button>
+                    </div>
 
                     {step1 && step1result.length < 16 && (
                         <div>
