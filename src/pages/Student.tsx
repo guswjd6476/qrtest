@@ -72,6 +72,9 @@ const Student: React.FC = () => {
     // Function to navigate to the admin page
     const goToHome = () => {
         router.push('/');
+        setStep3(false);
+        setStep2(false);
+        setStep1(false);
     };
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -196,6 +199,8 @@ const Student: React.FC = () => {
                         <button
                             onClick={() => {
                                 setStep1(true);
+                                setStep3(false);
+                                setStep2(false);
                             }}
                             className="mr-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
                         >
@@ -204,6 +209,7 @@ const Student: React.FC = () => {
                         <button
                             onClick={() => {
                                 setStep2(true);
+                                setStep1(false);
                             }}
                             className=" mr-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
                         >
@@ -212,6 +218,8 @@ const Student: React.FC = () => {
                         <button
                             onClick={() => {
                                 setStep3(true);
+                                setStep2(false);
+                                setStep1(false);
                             }}
                             className=" mr-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
                         >
