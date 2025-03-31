@@ -239,8 +239,9 @@ const Iam: React.FC = () => {
                                     />
                                 </div>
                                 <p className="text-lg text-gray-800">{name}님, 고생하셨습니다!</p>
+
                                 <p className="text-md text-gray-800 mt-4 italic">
-                                    "{quote.text}" - {quote.author}
+                                    &quot;{quote.text}&quot; - {quote.author}
                                 </p>
                                 <button
                                     onClick={goToHome}
