@@ -26,7 +26,7 @@ const PuzzlePiece: React.FC<PuzzlePieceProps> = ({ filled }) => {
     };
 
     return (
-        <div className="relative w-20 h-20 border border-black rounded-md">
+        <div className="relative w-24 h-24 border border-black rounded-md m-2 overflow-hidden">
             {filled ? drawOutline() : null} {/* 퍼즐이 채워진 경우에만 윤곽을 그림 */}
             {filled ? (
                 <div className="absolute inset-0 bg-blue-500" />
@@ -107,14 +107,11 @@ const Iam: React.FC = () => {
 
     const generatePuzzle = (result: StudentData[]): boolean[][] => {
         const attendanceArray: boolean[][] = [];
-        const puzzleOrder = [
-            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-            30, 31, 32, 33, 34, 35, 36,
-        ];
+        const puzzleOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 4; i++) {
             const row: boolean[] = [];
-            for (let j = 0; j < 6; j++) {
+            for (let j = 0; j < 4; j++) {
                 row.push(false); // 초기값은 모두 출석하지 않음(false)
             }
             attendanceArray.push(row);
@@ -124,8 +121,8 @@ const Iam: React.FC = () => {
             const indexnum = data.indexnum;
             const index = puzzleOrder.indexOf(indexnum);
             if (index !== -1) {
-                const row = Math.floor(index / 6);
-                const col = index % 6;
+                const row = Math.floor(index / 4);
+                const col = index % 4;
                 attendanceArray[row][col] = true; // 해당 위치에 출석 여부 표시
             }
         });
