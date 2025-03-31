@@ -190,12 +190,20 @@ const Iam: React.FC = () => {
                         <button
                             onClick={handleButtonClick}
                             disabled={isSubmitting || !uidList}
-                            className={`w-full py-3 bg-blue-600 text-white rounded-lg ${
-                                isSubmitting || !uidList ? 'bg-orange-400 cursor-not-allowed' : 'hover:bg-blue-700'
-                            } transition-all duration-300`}
+                            className={`w-full py-3 text-white font-semibold rounded-lg transition-all duration-300 shadow-md
+            ${
+                isSubmitting || !uidList
+                    ? 'bg-yellow-400 cursor-not-allowed text-gray-800'
+                    : 'bg-blue-600 hover:bg-blue-700'
+            }`}
                         >
                             {isSubmitting ? '제출중...' : '제출'}
                         </button>
+                        {(isSubmitting || !uidList) && (
+                            <div className="text-sm text-yellow-600 bg-yellow-100 px-3 py-2 rounded-md shadow-sm">
+                                ⚠️ 버튼이 노란색이면 새로고침을 해주세요
+                            </div>
+                        )}
                     </div>
                 ) : (
                     <>
