@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { FormEvent } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 
@@ -32,7 +31,7 @@ const Iam: React.FC = () => {
     const [quote, setQuote] = useState<{ text: string; author: string }>({
         text: '',
         author: '',
-    }); // 명언과 작가 상태
+    });
 
     const goToHome = () => {
         router.push('/');
@@ -56,7 +55,6 @@ const Iam: React.FC = () => {
     }, [date]);
 
     useEffect(() => {
-        // 끈기에 대한 명언과 작가 30개 배열
         const quotes = [
             { text: '끈기는 결국 성공을 가져온다.', author: '알버트 아인슈타인' },
             { text: '자신의 한계를 극복할 때, 우리는 성장한다.', author: '조지프 캠벨' },
@@ -91,28 +89,31 @@ const Iam: React.FC = () => {
             { text: '삶에서 끈기는 가장 큰 힘이다.', author: '헬렌 켈러' },
         ];
 
-        // 랜덤으로 명언을 선택
         const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
         setQuote(randomQuote);
     }, []);
 
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-
-        if (!uidList) {
-            console.error('uidList가 유효하지 않습니다.');
+    const handleButtonClick = async () => {
+        if (!name.trim()) {
+            console.error('이름을 입력해주세요.');
             return;
         }
 
         if (isSubmitting) {
-            return; // 제출 중일 경우 더 이상 제출하지 않음
+            return; // 이미 제출 중이라면 다시 제출하지 않도록
         }
 
         setIsSubmitting(true); // 제출 시작
 
         try {
+            if (!uidList) {
+                console.error('uidList가 유효하지 않습니다.');
+                return;
+            }
+
             const uid = uidList.indexnum;
             const response = await axios.post('/api/addName3', { name, uid });
+
             if (response.status === 200) {
                 const result: StudentData[] = response.data;
                 const uniqueData: StudentData[] = Object.values(
@@ -170,7 +171,7 @@ const Iam: React.FC = () => {
         >
             <div className="bg-white bg-opacity-80 rounded-xl shadow-xl p-6 w-full sm:w-96 md:w-96 lg:w-96 xl:w-1/3">
                 {!showAttendance ? (
-                    <form onSubmit={handleSubmit} className="mb-4">
+                    <div>
                         <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">이름을 입력해주세요</h2>
                         <label className="block mb-4">
                             <input
@@ -182,15 +183,15 @@ const Iam: React.FC = () => {
                             />
                         </label>
                         <button
-                            type="submit"
-                            disabled={isSubmitting} // 제출 중일 때 버튼 비활성화
+                            onClick={handleButtonClick}
+                            disabled={isSubmitting}
                             className={`w-full py-3 bg-blue-600 text-white rounded-lg ${
                                 isSubmitting ? 'bg-blue-400 cursor-not-allowed' : 'hover:bg-blue-700'
                             } transition-all duration-300`}
                         >
-                            {isSubmitting ? '제출중...' : '제출'} {/* 제출 중 텍스트 변경 */}
+                            {isSubmitting ? '제출중...' : '제출'}
                         </button>
-                    </form>
+                    </div>
                 ) : (
                     <>
                         <div className="text-center">
