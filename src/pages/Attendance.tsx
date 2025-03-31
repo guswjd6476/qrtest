@@ -13,6 +13,8 @@ interface StudentAttendance {
 
 export default function Attendance() {
     const [attendanceData, setAttendanceData] = useState<StudentAttendance[]>([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -24,12 +26,12 @@ export default function Attendance() {
                         if (!accumulator[student.name]) {
                             accumulator[student.name] = {
                                 name: student.name,
-                                attendance: Array(16).fill({ attended: false, dateTime: '' }), // 16회차까지의 출석 여부와 날짜를 초기화합니다.
+                                attendance: Array(16).fill({ attended: false, dateTime: '' }),
                             };
                         }
                         accumulator[student.name].attendance[student.indexnum - 1] = {
                             attended: true,
-                            dateTime: new Date(student.date).toLocaleString(), // 출석한 경우 해당 날짜와 시간을 저장합니다.
+                            dateTime: new Date(student.date).toLocaleString(),
                         };
                         return accumulator;
                     }, {});
@@ -39,20 +41,44 @@ export default function Attendance() {
                 }
             } catch (error) {
                 console.error('오류 발생:', error);
-                // Handle errors
             }
         };
-
         fetchData();
     }, []);
 
+    const handleSort = () => {
+        const sortedData = [...attendanceData].sort((a, b) => {
+            return sortOrder === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+        });
+        setAttendanceData(sortedData);
+        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    };
+
+    const filteredData = attendanceData.filter((student) =>
+        student.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
-        <main className="min-h-screen flex justify-center items-center bg-gray-100">
-            <div className="overflow-x-auto">
-                <table className="table-auto bg-white rounded shadow-md">
+        <main className="min-h-screen w-full flex flex-col items-center bg-gray-100 p-4">
+            <div className="mb-4 flex gap-4 w-full ">
+                <input
+                    type="text"
+                    placeholder="이름 검색..."
+                    className="border p-2 rounded"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={handleSort}>
+                    이름 정렬 ({sortOrder === 'asc' ? '⬆' : '⬇'})
+                </button>
+            </div>
+            <div className="overflow-x-auto w-full ">
+                <table className="w-full table-auto bg-white rounded-lg shadow-lg border">
                     <thead>
-                        <tr>
-                            <th className="px-4 py-2"></th>
+                        <tr className="bg-gray-200 text-gray-700">
+                            <th className="px-4 py-2 cursor-pointer" onClick={handleSort}>
+                                이름 ⬍
+                            </th>
                             {Array.from({ length: 16 }, (_, index) => (
                                 <th key={index} className="px-4 py-2">
                                     {index + 1}회차
@@ -61,17 +87,17 @@ export default function Attendance() {
                         </tr>
                     </thead>
                     <tbody>
-                        {attendanceData.map((student) => (
-                            <tr key={student.name}>
+                        {filteredData.map((student) => (
+                            <tr key={student.name} className="border-b hover:bg-gray-100">
                                 <td className="border px-4 py-2 font-bold">{student.name}</td>
                                 {student.attendance.map((attendance, index) => (
                                     <td
                                         key={index}
-                                        className={`border px-4 py-2 ${
-                                            attendance.attended ? 'text-green-500' : 'text-red-500'
+                                        className={`border px-4 py-2 text-center ${
+                                            attendance.attended ? 'text-green-500 font-bold' : 'text-red-500'
                                         }`}
                                     >
-                                        {attendance.attended ? attendance.dateTime : ''}
+                                        {attendance.attended ? attendance.dateTime : '✗'}
                                     </td>
                                 ))}
                             </tr>
