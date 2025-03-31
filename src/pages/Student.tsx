@@ -60,10 +60,13 @@ const Student: React.FC = () => {
             style={{ backgroundImage: "url('/back.png')" }}
         >
             <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center">
-                <h1 className="text-4xl font-bold mb-2">iam25기</h1>
+                <h1 className="text-4xl font-bold mb-2">I am creator</h1>
                 <h2 className="mb-4">출석체크 해주시는 분의 이름을 입력해주세요</h2>
                 {!showAttendance ? (
-                    <form onSubmit={handleSubmit} className="mb-4">
+                    <form
+                        onSubmit={handleSubmit}
+                        className="mb-4"
+                    >
                         <input
                             type="text"
                             value={name}
@@ -71,16 +74,25 @@ const Student: React.FC = () => {
                             className="border border-gray-300 rounded-md px-3 py-2 text-black"
                             placeholder="이름 입력"
                         />
-                        <button type="submit" className="ml-2 bg-blue-500 text-white px-4 py-2 rounded-md">
+                        <button
+                            type="submit"
+                            className="ml-2 bg-blue-500 text-white px-4 py-2 rounded-md"
+                        >
                             입력
                         </button>
                     </form>
                 ) : (
                     <div className="text-center">
                         {attendance.map((row, rowIndex) => (
-                            <div key={rowIndex} className="flex justify-center ">
+                            <div
+                                key={rowIndex}
+                                className="flex justify-center "
+                            >
                                 {row.map((filled, colIndex) => (
-                                    <PuzzlePiece key={colIndex} filled={filled} />
+                                    <PuzzlePiece
+                                        key={colIndex}
+                                        filled={filled}
+                                    />
                                 ))}
                             </div>
                         ))}
@@ -97,7 +109,10 @@ const Student: React.FC = () => {
                             </span>
                         </h2>
 
-                        <button onClick={goToHome} className="mt-4 bg-blue-500 px-4 py-2 rounded-md">
+                        <button
+                            onClick={goToHome}
+                            className="mt-4 bg-blue-500 px-4 py-2 rounded-md"
+                        >
                             홈
                         </button>
                     </div>

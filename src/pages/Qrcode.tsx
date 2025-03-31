@@ -17,7 +17,10 @@ export default function Qrcode() {
     }, []);
 
     return (
-        <div style={{ backgroundImage: 'url("/main.png")' }} className="bg-cover bg-center rounded shadow-md ">
+        <div
+            style={{ backgroundImage: 'url("/main.png")' }}
+            className="bg-cover bg-top rounded shadow-md "
+        >
             {!isLoggedIn ? <></> : <QRGenerator />}
         </div>
     );

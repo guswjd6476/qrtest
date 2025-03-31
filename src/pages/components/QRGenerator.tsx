@@ -53,14 +53,17 @@ const QRGenerator = () => {
     return (
         <div
             style={{ backgroundImage: 'url("/main.jpg")' }} // 배경 이미지 경로
-            className="p-6 min-h-screen bg-cover bg-center flex justify-center items-center bg-blur backdrop-blur-sm"
+            className="p-6 min-h-screen bg-cover bg-top flex justify-center items-center bg-blur backdrop-blur-sm"
         >
             <div className="bg-white bg-opacity-90 backdrop-blur-md p-8 rounded-2xl shadow-xl w-full sm:w-96 md:w-96 lg:w-96 xl:w-96 max-w-4xl">
                 <h1 className="text-3xl font-semibold text-center text-gray-800 mb-6">QR 코드 생성기</h1>
 
                 {!isGenerated ? (
                     <>
-                        <QRCodeInput value={qrData} onChange={handleInputChange} />
+                        <QRCodeInput
+                            value={qrData}
+                            onChange={handleInputChange}
+                        />
 
                         <button
                             onClick={() => generateQRCode()}

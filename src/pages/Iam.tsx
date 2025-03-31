@@ -170,7 +170,7 @@ const Iam: React.FC = () => {
             style={{
                 backgroundImage: 'url("/main.png")',
                 backgroundSize: 'cover',
-                backgroundPosition: 'center',
+                backgroundPosition: 'top',
             }}
             className="min-h-screen p-4 sm:p-8 flex justify-center items-center"
         >
@@ -209,9 +209,15 @@ const Iam: React.FC = () => {
                     <>
                         <div className="text-center">
                             {attendance.map((row, rowIndex) => (
-                                <div key={rowIndex} className="flex justify-center">
+                                <div
+                                    key={rowIndex}
+                                    className="flex justify-center"
+                                >
                                     {row.map((filled, colIndex) => (
-                                        <PuzzlePiece key={`${rowIndex}-${colIndex}`} filled={filled} />
+                                        <PuzzlePiece
+                                            key={`${rowIndex}-${colIndex}`}
+                                            filled={filled}
+                                        />
                                     ))}
                                 </div>
                             ))}
