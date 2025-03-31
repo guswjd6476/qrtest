@@ -13,18 +13,17 @@ const QRGenerator = () => {
 
     useEffect(() => {
         const id = crypto.randomUUID();
-
         setQrUid(id);
     }, []);
+
     const handleInputChange = (value: string) => {
         setQrData(value);
         setIsGenerated(false);
     };
-    console.log(qrData, qrUid, 'uid');
+
     const generateQRCode = async () => {
         if (qrData) {
             try {
-                // 서버로 이름 전송
                 const response = await axios.post('/api/adduid', { qrData, qrUid });
                 if (response.status === 200) {
                     setIsGenerated(true);
@@ -33,7 +32,6 @@ const QRGenerator = () => {
                 }
             } catch (error) {
                 console.error('오류 발생:', error);
-                // 오류 처리
             }
         }
     };
@@ -45,20 +43,56 @@ const QRGenerator = () => {
         }
     };
 
+    // 재생성 버튼 클릭 시 초기 상태로 리셋
+    const handleRegenerate = () => {
+        setQrData('');
+        setIsGenerated(false);
+    };
+
     return (
-        <>
-            <QRCodeInput value={qrData} onChange={handleInputChange} />
-            <button onClick={() => generateQRCode()} disabled={qrData === ''}>
-                생성
-            </button>
-            {isGenerated && (
-                <>
-                    <div className="border p-2" onClick={handleQRClick}>
-                        <QRCode value={`https://qrtest-eight.vercel.app/Iam?date=${qrUid}`} />
-                    </div>
-                </>
-            )}
-        </>
+        <div
+            style={{ backgroundImage: 'url("/main.jpg")' }} // 배경 이미지 경로
+            className="p-6 min-h-screen bg-cover bg-center flex justify-center items-center bg-blur backdrop-blur-sm"
+        >
+            <div className="bg-white bg-opacity-90 backdrop-blur-md p-8 rounded-2xl shadow-xl w-full sm:w-96 md:w-96 lg:w-96 xl:w-96 max-w-4xl">
+                <h1 className="text-3xl font-semibold text-center text-gray-800 mb-6">QR 코드 생성기</h1>
+
+                {!isGenerated ? (
+                    <>
+                        <QRCodeInput value={qrData} onChange={handleInputChange} />
+
+                        <button
+                            onClick={() => generateQRCode()}
+                            disabled={qrData === ''}
+                            className="w-full py-3 mt-4 bg-blue-600 text-white rounded-lg disabled:bg-gray-400 hover:bg-blue-700 transition-all duration-300"
+                        >
+                            생성
+                        </button>
+                    </>
+                ) : (
+                    <motion.div
+                        className="mt-6 text-center"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        <div
+                            className="border p-4 rounded-lg cursor-pointer hover:bg-gray-200 transition-all duration-300"
+                            onClick={handleQRClick}
+                        >
+                            <QRCode value={`https://qrtest-eight.vercel.app/Iam?date=${qrUid}`} />
+                        </div>
+
+                        <button
+                            onClick={handleRegenerate}
+                            className="w-full py-3 mt-4 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-all duration-300"
+                        >
+                            재생성
+                        </button>
+                    </motion.div>
+                )}
+            </div>
+        </div>
     );
 };
 

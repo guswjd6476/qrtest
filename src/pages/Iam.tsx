@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FormEvent } from 'react';
 import { useRouter } from 'next/router';
+import Image from 'next/image'; // Image 컴포넌트 import
 
 interface PuzzlePieceProps {
     filled: boolean;
@@ -18,17 +19,8 @@ const PuzzlePiece: React.FC<PuzzlePieceProps> = ({ filled }) => {
         };
 
         return (
-            <svg
-                className="absolute inset-0"
-                viewBox="0 0 100 100"
-            >
-                <rect
-                    x="5"
-                    y="5"
-                    width="90"
-                    height="90"
-                    style={outlineStyle}
-                />
+            <svg className="absolute inset-0" viewBox="0 0 100 100">
+                <rect x="5" y="5" width="90" height="90" style={outlineStyle} />
             </svg>
         );
     };
@@ -142,74 +134,68 @@ const Iam: React.FC = () => {
     };
 
     return (
-        <div className="p-4">
-            {!showAttendance ? (
-                // 이름 입력 폼
-                <form
-                    onSubmit={handleSubmit}
-                    className="mb-4"
-                >
-                    <label className="block mb-2">
-                        이름:
-                        <input
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-blue-500"
-                        />
-                    </label>
-                    <button
-                        type="submit"
-                        className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
-                    >
-                        입력
-                    </button>
-                </form>
-            ) : (
-                // 출석 여부 표시
-                <>
-                    {showAttendance && stepResult.length < 16 ? (
-                        attendance.map((row: boolean[], rowIndex: number) => (
-                            <div
-                                key={rowIndex}
-                                className="flex"
-                            >
+        <div
+            style={{
+                backgroundImage: 'url("/main.png")', // 배경 이미지 경로
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+            }}
+            className="min-h-screen p-8 flex justify-center items-center"
+        >
+            <div className="bg-white bg-opacity-80 rounded-xl shadow-xl p-6 w-full sm:w-96 md:w-96 lg:w-96 xl:w-1/3">
+                {!showAttendance ? (
+                    // 이름 입력 폼
+                    <form onSubmit={handleSubmit} className="mb-4">
+                        <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">이름을 입력해주세요</h2>
+                        <label className="block mb-4">
+                            <input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:border-blue-500"
+                                placeholder="이름"
+                            />
+                        </label>
+                        <button
+                            type="submit"
+                            className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300"
+                        >
+                            제출
+                        </button>
+                    </form>
+                ) : (
+                    <>
+                        {attendance.map((row: boolean[], rowIndex: number) => (
+                            <div key={rowIndex} className="flex justify-center mb-4">
                                 {row.map((filled: boolean, colIndex: number) => (
-                                    <PuzzlePiece
-                                        key={colIndex}
-                                        filled={filled}
-                                    />
+                                    <PuzzlePiece key={colIndex} filled={filled} />
                                 ))}
                             </div>
-                        ))
-                    ) : showAttendance && stepResult.length >= 16 ? (
-                        <div>
-                            <div className="w-44 h-44">
-                                <img
-                                    className="object-cover w-full h-full"
-                                    src="/whoiam.jpg"
-                                    alt="Description of the image"
-                                />
+                        ))}
+
+                        {stepResult.length >= 16 && (
+                            <div className="text-center">
+                                <div className="w-44 h-44 mx-auto mb-4">
+                                    <Image
+                                        className="object-cover w-full h-full rounded-md"
+                                        src="/whoiam.jpg" // 이미지 경로
+                                        alt="축하 이미지"
+                                        width={176} // 이미지의 너비 설정
+                                        height={176} // 이미지의 높이 설정
+                                    />
+                                </div>
+                                <p className="text-lg text-gray-800">{name}님, 고생하셨습니다!</p>
+                                <button
+                                    onClick={goToHome}
+                                    className="w-full py-3 mt-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300"
+                                >
+                                    홈으로
+                                </button>
                             </div>
-                            <div>{name}님 고생 하셨습니다 :)</div>
-                            <button
-                                onClick={goToHome}
-                                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
-                            >
-                                뒤로가기
-                            </button>
-                        </div>
-                    ) : null}
-                    {showAttendance && (
-                        <button
-                            onClick={goToHome}
-                            className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
-                        >
-                            홈
-                        </button>
-                    )}
-                </>
-            )}
+                        )}
+                    </>
+                )}
+            </div>
         </div>
     );
 };
