@@ -217,9 +217,9 @@ const Iam: React.FC = () => {
                     </form>
                 ) : (
                     <>
-                        <div className="grid grid-cols-4 ">
+                        <div className="grid grid-cols-4 gap-0">
                             {attendance.map((row, rowIndex) => (
-                                <div key={rowIndex} className="flex justify-center ">
+                                <div key={rowIndex} className="flex justify-center">
                                     {row.map((filled, colIndex) => (
                                         <PuzzlePiece key={colIndex} filled={filled} />
                                     ))}
