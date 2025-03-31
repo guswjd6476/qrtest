@@ -191,7 +191,7 @@ const Iam: React.FC = () => {
                             onClick={handleButtonClick}
                             disabled={isSubmitting || !uidList}
                             className={`w-full py-3 bg-blue-600 text-white rounded-lg ${
-                                isSubmitting || !uidList ? 'bg-blue-400 cursor-not-allowed' : 'hover:bg-blue-700'
+                                isSubmitting || !uidList ? 'bg-orange-400 cursor-not-allowed' : 'hover:bg-blue-700'
                             } transition-all duration-300`}
                         >
                             {isSubmitting ? '제출중...' : '제출'}
