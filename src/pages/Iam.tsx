@@ -108,6 +108,7 @@ const Iam: React.FC = () => {
         try {
             if (!uidList) {
                 console.error('uidList가 유효하지 않습니다.');
+                alert('uidList가 유효하지 않습니다.');
                 return;
             }
 
@@ -126,10 +127,11 @@ const Iam: React.FC = () => {
                 setAttendance(generatePuzzle(result));
                 setShowAttendance(true);
             } else {
-                console.error('서버 오류:', response.status);
+                alert('서버 오류');
             }
         } catch (error) {
             console.error('오류 발생:', error);
+            alert('오류발생');
         } finally {
             setIsSubmitting(false); // 제출 완료 후 상태 초기화
         }
