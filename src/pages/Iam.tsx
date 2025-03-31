@@ -2,20 +2,19 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FormEvent } from 'react';
 import { useRouter } from 'next/router';
-import Image from 'next/image'; // Image 컴포넌트 import
+import Image from 'next/image';
 
 interface PuzzlePieceProps {
     filled: boolean;
 }
 
 const PuzzlePiece: React.FC<PuzzlePieceProps> = ({ filled }) => {
-    // 각 조각의 윤곽을 그리는 함수
     const drawOutline = () => {
         const outlineStyle: React.CSSProperties = {
             fill: 'none',
             stroke: 'black',
-            strokeWidth: '2', // 테두리를 더 두껍게 설정
-            strokeLinejoin: 'round', // 모서리를 둥글게 처리
+            strokeWidth: '2',
+            strokeLinejoin: 'round',
         };
 
         return (
@@ -26,8 +25,8 @@ const PuzzlePiece: React.FC<PuzzlePieceProps> = ({ filled }) => {
     };
 
     return (
-        <div className="relative w-24 h-24 border border-black rounded-md m-2 overflow-hidden">
-            {filled ? drawOutline() : null} {/* 퍼즐이 채워진 경우에만 윤곽을 그림 */}
+        <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 border border-black rounded-md m-2 overflow-hidden">
+            {filled ? drawOutline() : null}
             {filled ? (
                 <div className="absolute inset-0 bg-blue-500" />
             ) : (
@@ -48,11 +47,12 @@ const Iam: React.FC = () => {
     const router = useRouter();
     const { date } = router.query;
 
-    const [attendance, setAttendance] = useState<boolean[][]>([]); // 출석 여부 배열
-    const [name, setName] = useState<string>(''); // 이름 입력 상태
-    const [uidList, setUidList] = useState<any>(null); // uidList의 초기값을 null로 설정
+    const [attendance, setAttendance] = useState<boolean[][]>([]);
+    const [name, setName] = useState<string>('');
+    const [uidList, setUidList] = useState<any>(null);
     const [showAttendance, setShowAttendance] = useState<boolean>(false);
     const [stepResult, setStepResult] = useState<StudentData[]>([]);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false); // 추가된 상태 (제출 중 여부)
 
     const goToHome = () => {
         router.push('/');
@@ -76,12 +76,18 @@ const Iam: React.FC = () => {
     }, [date]);
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault(); // 폼 제출 시 새로고침 방지
+        event.preventDefault();
 
         if (!uidList) {
             console.error('uidList가 유효하지 않습니다.');
             return;
         }
+
+        if (isSubmitting) {
+            return; // 제출 중일 경우 더 이상 제출하지 않음
+        }
+
+        setIsSubmitting(true); // 제출 시작
 
         try {
             const uid = uidList.indexnum;
@@ -95,13 +101,15 @@ const Iam: React.FC = () => {
                     }, {} as { [key: number]: StudentData })
                 );
                 setStepResult(uniqueData);
-                setAttendance(generatePuzzle(result)); // 출석 여부 설정
-                setShowAttendance(true); // 출석 여부 표시
+                setAttendance(generatePuzzle(result));
+                setShowAttendance(true);
             } else {
                 console.error('서버 오류:', response.status);
             }
         } catch (error) {
             console.error('오류 발생:', error);
+        } finally {
+            setIsSubmitting(false); // 제출 완료 후 상태 초기화
         }
     };
 
@@ -112,7 +120,7 @@ const Iam: React.FC = () => {
         for (let i = 0; i < 4; i++) {
             const row: boolean[] = [];
             for (let j = 0; j < 4; j++) {
-                row.push(false); // 초기값은 모두 출석하지 않음(false)
+                row.push(false);
             }
             attendanceArray.push(row);
         }
@@ -123,7 +131,7 @@ const Iam: React.FC = () => {
             if (index !== -1) {
                 const row = Math.floor(index / 4);
                 const col = index % 4;
-                attendanceArray[row][col] = true; // 해당 위치에 출석 여부 표시
+                attendanceArray[row][col] = true;
             }
         });
 
@@ -133,15 +141,14 @@ const Iam: React.FC = () => {
     return (
         <div
             style={{
-                backgroundImage: 'url("/main.png")', // 배경 이미지 경로
+                backgroundImage: 'url("/main.png")',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
             }}
-            className="min-h-screen p-8 flex justify-center items-center"
+            className="min-h-screen p-4 sm:p-8 flex justify-center items-center"
         >
             <div className="bg-white bg-opacity-80 rounded-xl shadow-xl p-6 w-full sm:w-96 md:w-96 lg:w-96 xl:w-1/3">
                 {!showAttendance ? (
-                    // 이름 입력 폼
                     <form onSubmit={handleSubmit} className="mb-4">
                         <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">이름을 입력해주세요</h2>
                         <label className="block mb-4">
@@ -155,30 +162,35 @@ const Iam: React.FC = () => {
                         </label>
                         <button
                             type="submit"
-                            className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300"
+                            disabled={isSubmitting} // 제출 중일 때 버튼 비활성화
+                            className={`w-full py-3 bg-blue-600 text-white rounded-lg ${
+                                isSubmitting ? 'bg-blue-400 cursor-not-allowed' : 'hover:bg-blue-700'
+                            } transition-all duration-300`}
                         >
-                            제출
+                            {isSubmitting ? '제출중...' : '제출'} {/* 제출 중 텍스트 변경 */}
                         </button>
                     </form>
                 ) : (
                     <>
-                        {attendance.map((row: boolean[], rowIndex: number) => (
-                            <div key={rowIndex} className="flex justify-center mb-4">
-                                {row.map((filled: boolean, colIndex: number) => (
-                                    <PuzzlePiece key={colIndex} filled={filled} />
-                                ))}
-                            </div>
-                        ))}
+                        <div className="grid grid-cols-4 ">
+                            {attendance.map((row: boolean[], rowIndex: number) => (
+                                <div key={rowIndex} className="flex justify-center mb-4">
+                                    {row.map((filled: boolean, colIndex: number) => (
+                                        <PuzzlePiece key={colIndex} filled={filled} />
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
 
                         {stepResult.length >= 16 && (
                             <div className="text-center">
                                 <div className="w-44 h-44 mx-auto mb-4">
                                     <Image
                                         className="object-cover w-full h-full rounded-md"
-                                        src="/whoiam.jpg" // 이미지 경로
+                                        src="/whoiam.jpg"
                                         alt="축하 이미지"
-                                        width={176} // 이미지의 너비 설정
-                                        height={176} // 이미지의 높이 설정
+                                        width={176}
+                                        height={176}
                                     />
                                 </div>
                                 <p className="text-lg text-gray-800">{name}님, 고생하셨습니다!</p>
