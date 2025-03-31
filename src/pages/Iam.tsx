@@ -9,31 +9,7 @@ interface PuzzlePieceProps {
 }
 
 const PuzzlePiece: React.FC<PuzzlePieceProps> = ({ filled }) => {
-    const drawOutline = () => {
-        const outlineStyle: React.CSSProperties = {
-            fill: 'none',
-            stroke: 'black',
-            strokeWidth: '2',
-            strokeLinejoin: 'round',
-        };
-
-        return (
-            <svg className="absolute inset-0" viewBox="0 0 100 100">
-                <rect x="5" y="5" width="90" height="90" style={outlineStyle} />
-            </svg>
-        );
-    };
-
-    return (
-        <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 border border-black rounded-md m-2 overflow-hidden">
-            {filled ? drawOutline() : null}
-            {filled ? (
-                <div className="absolute inset-0 bg-blue-500" />
-            ) : (
-                <div className="absolute inset-0 bg-gray-300" />
-            )}
-        </div>
-    );
+    return <div className={`relative w-20 h-20 border rounded-md ${filled ? 'bg-blue-500' : 'bg-gray-300'}`}></div>;
 };
 
 interface StudentData {
