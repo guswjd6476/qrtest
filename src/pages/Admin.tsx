@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { FormEvent } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../AuthProvider';
 
@@ -11,182 +10,155 @@ interface ItemWithExpireTime {
 
 const Admin: React.FC = () => {
     const { isLoggedIn, logout, login } = useAuth();
-    const [username, setUsername] = useState<string>('');
-    const [newUsername, setNewUsername] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [newPassword, setNewPassword] = useState<string>('');
-    const [name, setName] = useState<string>('');
-    const [allowLogin, setAllowLogin] = useState<boolean>(true);
+    const [username, setUsername] = useState('');
+    const [newUsername, setNewUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [name, setName] = useState('');
+    const [allowLogin, setAllowLogin] = useState(true);
     const router = useRouter();
 
     const setItemWithExpireTime = (keyName: string, keyValue: string, tts: number) => {
-        const expireTime = Date.now() + tts; // 토큰의 만료 시간 계산
-        const obj: ItemWithExpireTime = {
-            value: keyValue,
-            expire: expireTime,
-        };
-        const objString = JSON.stringify(obj);
-        window.localStorage.setItem(keyName, objString);
+        const expireTime = Date.now() + tts;
+        const obj: ItemWithExpireTime = { value: keyValue, expire: expireTime };
+        window.localStorage.setItem(keyName, JSON.stringify(obj));
     };
 
     const handleSubmitLogin = async () => {
         try {
             const response = await axios.post('/api/adminLogin', { username, password });
-            const { token, grade } = response.data; // Extract token from response
-            console.log(token, '?token');
+            const { token, grade } = response.data;
             if (token && grade === 1) {
-                // Store token and its expiry time in localStorage
-                const TOKEN_EXPIRY_TIME = 3600 * 1000; // 토큰의 만료 시간: 1시간 (단위: 밀리초)
-                setItemWithExpireTime('token', token, TOKEN_EXPIRY_TIME);
-
+                setItemWithExpireTime('token', token, 3600 * 1000);
                 alert('로그인 되었습니다');
-                login(); // 로그인 상태로 설정
-                // Redirect to Admin page
+                login();
                 router.push('/Admin');
-            } else if (token && grade !== 1) {
-                alert('인증받지 못한 아이디 입니다');
             } else {
-                alert('아이디 비밀번호를 확인해주세요');
+                alert('인증받지 못한 아이디입니다.');
             }
         } catch (error) {
             console.error('오류 발생:', error);
-            alert('아이디 비밀번호를 확인해주세요');
+            alert('아이디 또는 비밀번호를 확인해주세요.');
         }
     };
 
     const handleSubmit = async () => {
         try {
-            const response = await axios.post('/api/addAdmin', {
-                username: newUsername,
-                password: newPassword,
-                name: name,
-            });
-            if (response.data === true) {
-                const result = response.data;
-                console.log(result);
-                alert('가입되었습니다');
+            const response = await axios.post('/api/addAdmin', { username: newUsername, password: newPassword, name });
+            if (response.data) {
+                alert('가입되었습니다.');
                 setAllowLogin(true);
             } else {
-                alert('가입된 아이디 입니다');
+                alert('이미 가입된 아이디입니다.');
             }
         } catch (error) {
             console.error('오류 발생:', error);
-            // Handle errors
         }
     };
+
     return (
-        <div className="max-w-md mx-auto">
+        <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg mt-10">
             {!isLoggedIn ? (
-                <>
-                    <div className="mb-4">
-                        <label
-                            htmlFor="username"
-                            className="block text-gray-700"
-                        >
-                            아이디
-                        </label>
-                        <input
-                            type="text"
-                            id="username"
-                            value={allowLogin ? username : newUsername}
-                            onChange={(e) =>
-                                allowLogin ? setUsername(e.target.value) : setNewUsername(e.target.value)
-                            }
-                            className="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-blue-500 w-full"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label
-                            htmlFor="password"
-                            className="block text-gray-700"
-                        >
-                            비밀번호
-                        </label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={allowLogin ? password : newPassword}
-                            onChange={(e) =>
-                                allowLogin ? setPassword(e.target.value) : setNewPassword(e.target.value)
-                            }
-                            className="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-blue-500 w-full"
-                        />
-                    </div>
-                    {allowLogin ? (
-                        <></>
-                    ) : (
-                        <div className="mb-4">
-                            <label
-                                htmlFor="password"
-                                className="block text-gray-700"
-                            >
-                                이름
+                <div>
+                    <h2 className="text-xl font-semibold text-gray-800 text-center mb-4">
+                        {allowLogin ? '관리자 로그인' : '관리자 회원가입'}
+                    </h2>
+
+                    <div className="space-y-4">
+                        <div>
+                            <label htmlFor="username" className="block text-gray-700 font-medium">
+                                아이디
                             </label>
                             <input
-                                id="name"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                className="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-blue-500 w-full"
+                                type="text"
+                                id="username"
+                                value={allowLogin ? username : newUsername}
+                                onChange={(e) =>
+                                    allowLogin ? setUsername(e.target.value) : setNewUsername(e.target.value)
+                                }
+                                className="w-full border border-gray-300 rounded-md px-4 py-2 mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                             />
                         </div>
-                    )}
-                    <div className="mt-6 flex justify-between">
-                        <button
-                            onClick={() => {
-                                allowLogin ? handleSubmitLogin() : handleSubmit();
-                            }}
-                            className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
-                        >
-                            {allowLogin ? '로그인' : '가입하기'}
-                        </button>
-                        {allowLogin ? (
+
+                        <div>
+                            <label htmlFor="password" className="block text-gray-700 font-medium">
+                                비밀번호
+                            </label>
+                            <input
+                                type="password"
+                                id="password"
+                                value={allowLogin ? password : newPassword}
+                                onChange={(e) =>
+                                    allowLogin ? setPassword(e.target.value) : setNewPassword(e.target.value)
+                                }
+                                className="w-full border border-gray-300 rounded-md px-4 py-2 mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                            />
+                        </div>
+
+                        {!allowLogin && (
+                            <div>
+                                <label htmlFor="name" className="block text-gray-700 font-medium">
+                                    이름
+                                </label>
+                                <input
+                                    type="text"
+                                    id="name"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    className="w-full border border-gray-300 rounded-md px-4 py-2 mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                />
+                            </div>
+                        )}
+
+                        <div className="flex justify-between mt-6">
+                            <button
+                                onClick={allowLogin ? handleSubmitLogin : handleSubmit}
+                                className="w-full bg-blue-500 text-white font-semibold py-2 rounded-md shadow-md hover:bg-blue-600 transition-all"
+                            >
+                                {allowLogin ? '로그인' : '가입하기'}
+                            </button>
+                        </div>
+
+                        {allowLogin && (
                             <button
                                 onClick={() => setAllowLogin(false)}
-                                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                                className="w-full mt-2 text-blue-500 font-semibold hover:underline"
                             >
                                 회원가입
                             </button>
-                        ) : null}
+                        )}
                     </div>
-                </>
+                </div>
             ) : (
-                <>
-                    {/* 출석 현황 보기 및 Qrcode 페이지로 이동 버튼 */}
-                    <div className="mt-6 w-full flex flex-wrap justify-between">
+                <div className="text-center">
+                    <h2 className="text-xl font-semibold text-gray-800 mb-4">관리자 페이지</h2>
+
+                    <div className="grid grid-cols-2 gap-3">
                         <button
                             onClick={() => router.push('/Attendance')}
-                            className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                            className="bg-blue-500 text-white py-2 rounded-md shadow-md hover:bg-blue-600 transition-all"
                         >
-                            출석현황보기(합반전)
+                            출석현황
                         </button>
-                        <button
-                            onClick={() => router.push('/Attendance2')}
-                            className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
-                        >
-                            출석현황보기(합반후)
-                        </button>
-                        <button
-                            onClick={() => router.push('/Attendance3')}
-                            className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
-                        >
-                            출석현황보기(36칸 만든 후)
-                        </button>
+
                         <button
                             onClick={() => router.push('/Qrcode')}
-                            className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+                            className="bg-blue-500 text-white py-2 rounded-md shadow-md hover:bg-blue-600 transition-all"
                         >
-                            Qrcode 페이지로 이동
-                        </button>
-                        <button
-                            onClick={() => {
-                                logout();
-                                router.push('/');
-                            }}
-                        >
-                            로그아웃
+                            QR코드 페이지
                         </button>
                     </div>
-                </>
+
+                    <button
+                        onClick={() => {
+                            logout();
+                            router.push('/');
+                        }}
+                        className="mt-6 w-full bg-gray-400 text-white py-2 rounded-md shadow-md hover:bg-gray-500 transition-all"
+                    >
+                        로그아웃
+                    </button>
+                </div>
             )}
         </div>
     );
