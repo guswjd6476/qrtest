@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
@@ -198,7 +198,7 @@ const Iam: React.FC = () => {
                             {attendance.map((row, rowIndex) => (
                                 <div key={rowIndex} className="flex justify-center">
                                     {row.map((filled, colIndex) => (
-                                        <PuzzlePiece key={colIndex} filled={filled} />
+                                        <PuzzlePiece key={`${rowIndex}-${colIndex}`} filled={filled} />
                                     ))}
                                 </div>
                             ))}
@@ -215,18 +215,9 @@ const Iam: React.FC = () => {
                                         height={176}
                                     />
                                 </div>
-                                <p className="text-lg text-gray-800">{name}님, 고생하셨습니다!</p>
+                                <p className="text-xl font-semibold text-blue-600">당신은 {name}입니다</p>
                             </div>
                         )}
-                        <p className="text-md text-gray-800 mt-4 italic">
-                            &quot;{quote.text}&quot; - {quote.author}
-                        </p>
-                        <button
-                            onClick={goToHome}
-                            className="w-full py-3 mt-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300"
-                        >
-                            홈으로
-                        </button>
                     </>
                 )}
             </div>

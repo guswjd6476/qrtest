@@ -43,10 +43,11 @@ const QRGenerator = () => {
         }
     };
 
-    // 재생성 버튼 클릭 시 초기 상태로 리셋
     const handleRegenerate = () => {
-        setQrData('');
-        setIsGenerated(false);
+        const id = crypto.randomUUID(); // 새로운 UUID 생성
+        setQrUid(id); // qrUid 업데이트
+        setQrData(''); // 입력값 초기화
+        setIsGenerated(false); // QR 코드 생성 여부 초기화
     };
 
     return (
