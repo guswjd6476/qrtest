@@ -215,18 +215,17 @@ const Iam: React.FC = () => {
                                     />
                                 </div>
                                 <p className="text-lg text-gray-800">{name}님, 고생하셨습니다!</p>
-
-                                <p className="text-md text-gray-800 mt-4 italic">
-                                    &quot;{quote.text}&quot; - {quote.author}
-                                </p>
-                                <button
-                                    onClick={goToHome}
-                                    className="w-full py-3 mt-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300"
-                                >
-                                    홈으로
-                                </button>
                             </div>
                         )}
+                        <p className="text-md text-gray-800 mt-4 italic">
+                            &quot;{quote.text}&quot; - {quote.author}
+                        </p>
+                        <button
+                            onClick={goToHome}
+                            className="w-full py-3 mt-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300"
+                        >
+                            홈으로
+                        </button>
                     </>
                 )}
             </div>
