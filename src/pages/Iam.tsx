@@ -102,6 +102,7 @@ const Iam: React.FC = () => {
         }
 
         if (isSubmitting) {
+            alert('?');
             return; // 이미 제출 중이라면 다시 제출하지 않도록
         }
 
@@ -206,6 +207,10 @@ const Iam: React.FC = () => {
                                     ))}
                                 </div>
                             ))}
+                            <div className="mt-4 text-center text-gray-600">
+                                <p className="text-lg">{quote.text}</p>
+                                <p className="mt-2 text-sm">- {quote.author}</p>
+                            </div>
                         </div>
 
                         {stepResult.length >= 16 && (
@@ -220,10 +225,6 @@ const Iam: React.FC = () => {
                                     />
                                 </div>
                                 <p className="text-xl font-semibold text-blue-600">당신은 {name}입니다</p>
-                                <div className="mt-4 text-center text-gray-600">
-                                    <p className="text-lg">{quote.text}</p>
-                                    <p className="mt-2 text-sm">- {quote.author}</p>
-                                </div>
                             </div>
                         )}
                     </>
