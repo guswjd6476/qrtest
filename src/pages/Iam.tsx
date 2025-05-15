@@ -33,6 +33,10 @@ const Iam: React.FC = () => {
         author: '',
     });
 
+    const goToHome = () => {
+        router.push('/');
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -99,10 +103,10 @@ const Iam: React.FC = () => {
 
         if (isSubmitting) {
             alert('?');
-            return;
+            return; // 이미 제출 중이라면 다시 제출하지 않도록
         }
 
-        setIsSubmitting(true);
+        setIsSubmitting(true); // 제출 시작
 
         try {
             if (!uidList) {
@@ -112,7 +116,7 @@ const Iam: React.FC = () => {
             }
 
             const uid = uidList.indexnum;
-            const response = await axios.post('/api/addName2', { name, uid });
+            const response = await axios.post('/api/addName', { name, uid });
 
             if (response.status === 200) {
                 const result: StudentData[] = response.data;
@@ -123,7 +127,7 @@ const Iam: React.FC = () => {
                     }, {} as { [key: number]: StudentData })
                 );
                 setStepResult(uniqueData);
-                setAttendance(generatePuzzle(uniqueData));
+                setAttendance(generatePuzzle(result));
                 setShowAttendance(true);
             } else {
                 alert('서버 오류');
@@ -132,22 +136,28 @@ const Iam: React.FC = () => {
             console.error('오류 발생:', error);
             alert('오류발생');
         } finally {
-            setIsSubmitting(false);
+            setIsSubmitting(false); // 제출 완료 후 상태 초기화
         }
     };
 
     const generatePuzzle = (result: StudentData[]): boolean[][] => {
         const attendanceArray: boolean[][] = [];
+        const puzzleOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
         for (let i = 0; i < 4; i++) {
-            attendanceArray.push(new Array(5).fill(false));
+            const row: boolean[] = [];
+            for (let j = 0; j < 4; j++) {
+                row.push(false);
+            }
+            attendanceArray.push(row);
         }
 
         result.forEach((data) => {
-            const index = data.indexnum - 1; // 0-based index
-            if (index >= 0 && index < 20) {
-                const row = Math.floor(index / 5); // 5 columns
-                const col = index % 5;
+            const indexnum = data.indexnum;
+            const index = puzzleOrder.indexOf(indexnum);
+            if (index !== -1) {
+                const row = Math.floor(index / 4);
+                const col = index % 4;
                 attendanceArray[row][col] = true;
             }
         });
@@ -180,11 +190,12 @@ const Iam: React.FC = () => {
                         <button
                             onClick={handleButtonClick}
                             disabled={isSubmitting || !uidList}
-                            className={`w-full py-3 text-white font-semibold rounded-lg transition-all duration-300 shadow-md ${
-                                isSubmitting || !uidList
-                                    ? 'bg-yellow-400 cursor-not-allowed text-gray-800'
-                                    : 'bg-blue-600 hover:bg-blue-700'
-                            }`}
+                            className={`w-full py-3 text-white font-semibold rounded-lg transition-all duration-300 shadow-md
+            ${
+                isSubmitting || !uidList
+                    ? 'bg-yellow-400 cursor-not-allowed text-gray-800'
+                    : 'bg-blue-600 hover:bg-blue-700'
+            }`}
                         >
                             {isSubmitting ? '제출중...' : '제출'}
                         </button>
@@ -216,7 +227,7 @@ const Iam: React.FC = () => {
                             </div>
                         </div>
 
-                        {stepResult.length >= 20 && (
+                        {stepResult.length >= 16 && (
                             <div className="text-center">
                                 <div className="w-44 h-44 mx-auto mb-4">
                                     <Image
