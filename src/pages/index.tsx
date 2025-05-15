@@ -10,7 +10,7 @@ export default function Home() {
         >
             <div className="flex flex-col space-y-6">
                 <button
-                    onClick={() => router.push('/Student')}
+                    onClick={() => router.push('/Student2')}
                     className="bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:bg-blue-600 transition-all"
                 >
                     내 출석 확인

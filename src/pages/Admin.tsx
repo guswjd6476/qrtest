@@ -66,7 +66,10 @@ const Admin: React.FC = () => {
 
                     <div className="space-y-4">
                         <div>
-                            <label htmlFor="username" className="block text-gray-700 font-medium">
+                            <label
+                                htmlFor="username"
+                                className="block text-gray-700 font-medium"
+                            >
                                 아이디
                             </label>
                             <input
@@ -81,7 +84,10 @@ const Admin: React.FC = () => {
                         </div>
 
                         <div>
-                            <label htmlFor="password" className="block text-gray-700 font-medium">
+                            <label
+                                htmlFor="password"
+                                className="block text-gray-700 font-medium"
+                            >
                                 비밀번호
                             </label>
                             <input
@@ -97,7 +103,10 @@ const Admin: React.FC = () => {
 
                         {!allowLogin && (
                             <div>
-                                <label htmlFor="name" className="block text-gray-700 font-medium">
+                                <label
+                                    htmlFor="name"
+                                    className="block text-gray-700 font-medium"
+                                >
                                     이름
                                 </label>
                                 <input
@@ -138,9 +147,14 @@ const Admin: React.FC = () => {
                             onClick={() => router.push('/Attendance')}
                             className="bg-blue-500 text-white py-2 rounded-md shadow-md hover:bg-blue-600 transition-all"
                         >
-                            출석현황
+                            16회 출석현황
                         </button>
-
+                        <button
+                            onClick={() => router.push('/Attendance2')}
+                            className="bg-blue-500 text-white py-2 rounded-md shadow-md hover:bg-blue-600 transition-all"
+                        >
+                            20회 출석현황
+                        </button>
                         <button
                             onClick={() => router.push('/Qrcode')}
                             className="bg-blue-500 text-white py-2 rounded-md shadow-md hover:bg-blue-600 transition-all"
