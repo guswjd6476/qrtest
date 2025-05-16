@@ -33,10 +33,6 @@ const Iam: React.FC = () => {
         author: '',
     });
 
-    const goToHome = () => {
-        router.push('/');
-    };
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -103,10 +99,10 @@ const Iam: React.FC = () => {
 
         if (isSubmitting) {
             alert('?');
-            return; // 이미 제출 중이라면 다시 제출하지 않도록
+            return;
         }
 
-        setIsSubmitting(true); // 제출 시작
+        setIsSubmitting(true);
 
         try {
             if (!uidList) {
@@ -127,7 +123,7 @@ const Iam: React.FC = () => {
                     }, {} as { [key: number]: StudentData })
                 );
                 setStepResult(uniqueData);
-                setAttendance(generatePuzzle(result));
+                setAttendance(generatePuzzle(uniqueData));
                 setShowAttendance(true);
             } else {
                 alert('서버 오류');
@@ -136,28 +132,22 @@ const Iam: React.FC = () => {
             console.error('오류 발생:', error);
             alert('오류발생');
         } finally {
-            setIsSubmitting(false); // 제출 완료 후 상태 초기화
+            setIsSubmitting(false);
         }
     };
 
     const generatePuzzle = (result: StudentData[]): boolean[][] => {
         const attendanceArray: boolean[][] = [];
-        const puzzleOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
         for (let i = 0; i < 4; i++) {
-            const row: boolean[] = [];
-            for (let j = 0; j < 4; j++) {
-                row.push(false);
-            }
-            attendanceArray.push(row);
+            attendanceArray.push(new Array(5).fill(false));
         }
 
         result.forEach((data) => {
-            const indexnum = data.indexnum;
-            const index = puzzleOrder.indexOf(indexnum);
-            if (index !== -1) {
-                const row = Math.floor(index / 4);
-                const col = index % 4;
+            const index = data.indexnum - 1; // 0-based index
+            if (index >= 0 && index < 20) {
+                const row = Math.floor(index / 5); // 5 columns
+                const col = index % 5;
                 attendanceArray[row][col] = true;
             }
         });
@@ -190,12 +180,11 @@ const Iam: React.FC = () => {
                         <button
                             onClick={handleButtonClick}
                             disabled={isSubmitting || !uidList}
-                            className={`w-full py-3 text-white font-semibold rounded-lg transition-all duration-300 shadow-md
-            ${
-                isSubmitting || !uidList
-                    ? 'bg-yellow-400 cursor-not-allowed text-gray-800'
-                    : 'bg-blue-600 hover:bg-blue-700'
-            }`}
+                            className={`w-full py-3 text-white font-semibold rounded-lg transition-all duration-300 shadow-md ${
+                                isSubmitting || !uidList
+                                    ? 'bg-yellow-400 cursor-not-allowed text-gray-800'
+                                    : 'bg-blue-600 hover:bg-blue-700'
+                            }`}
                         >
                             {isSubmitting ? '제출중...' : '제출'}
                         </button>
@@ -227,7 +216,7 @@ const Iam: React.FC = () => {
                             </div>
                         </div>
 
-                        {stepResult.length >= 16 && (
+                        {stepResult.length >= 20 && (
                             <div className="text-center">
                                 <div className="w-44 h-44 mx-auto mb-4">
                                     <Image
