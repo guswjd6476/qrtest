@@ -112,7 +112,7 @@ const Iam: React.FC = () => {
             }
 
             const uid = uidList.indexnum;
-            const response = await axios.post('/api/addName', { name, uid });
+            const response = await axios.post('/api/addName2', { name, uid });
 
             if (response.status === 200) {
                 const result: StudentData[] = response.data;
