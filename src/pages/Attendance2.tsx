@@ -26,7 +26,7 @@ export default function Attendance() {
                         if (!accumulator[student.name]) {
                             accumulator[student.name] = {
                                 name: student.name,
-                                attendance: Array(16).fill({ attended: false, dateTime: '' }),
+                                attendance: Array(20).fill({ attended: false, dateTime: '' }),
                             };
                         }
                         accumulator[student.name].attendance[student.indexnum - 1] = {
@@ -60,7 +60,7 @@ export default function Attendance() {
 
     return (
         <main className="min-h-screen w-full flex flex-col items-center bg-gray-100 p-4">
-            <div className="mb-4 flex gap-4 w-full ">
+            <div className="mb-4 flex gap-4 w-full">
                 <input
                     type="text"
                     placeholder="이름 검색..."
@@ -68,28 +68,22 @@ export default function Attendance() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded"
-                    onClick={handleSort}
-                >
+                <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={handleSort}>
                     이름 정렬 ({sortOrder === 'asc' ? '⬆' : '⬇'})
                 </button>
             </div>
-            <div className="overflow-x-auto w-full ">
-                <table className="w-full table-auto bg-white rounded-lg shadow-lg border">
-                    <thead>
-                        <tr className="bg-gray-200 text-gray-700">
+            <div className="overflow-auto w-full max-h-[80vh]">
+                <table className="min-w-[1200px] table-auto bg-white rounded-lg shadow-lg border border-collapse">
+                    <thead className="sticky top-0 z-10 bg-gray-200 text-gray-700">
+                        <tr>
                             <th
-                                className="px-4 py-2 cursor-pointer"
+                                className="px-4 py-2 sticky left-0 bg-gray-200 z-20 border-r font-bold text-left"
                                 onClick={handleSort}
                             >
                                 이름 ⬍
                             </th>
-                            {Array.from({ length: 16 }, (_, index) => (
-                                <th
-                                    key={index}
-                                    className="px-4 py-2"
-                                >
+                            {Array.from({ length: 20 }, (_, index) => (
+                                <th key={index} className="px-4 py-2 text-center">
                                     {index + 1}회차
                                 </th>
                             ))}
@@ -97,15 +91,14 @@ export default function Attendance() {
                     </thead>
                     <tbody>
                         {filteredData.map((student) => (
-                            <tr
-                                key={student.name}
-                                className="border-b hover:bg-gray-100"
-                            >
-                                <td className="border px-4 py-2 font-bold">{student.name}</td>
+                            <tr key={student.name} className="border-b hover:bg-gray-100">
+                                <td className="border px-4 py-2 font-bold sticky left-0 bg-white z-10 whitespace-nowrap">
+                                    {student.name}
+                                </td>
                                 {student.attendance.map((attendance, index) => (
                                     <td
                                         key={index}
-                                        className={`border px-4 py-2 text-center ${
+                                        className={`border px-4 py-2 text-center whitespace-nowrap ${
                                             attendance.attended ? 'text-green-500 font-bold' : 'text-red-500'
                                         }`}
                                     >
