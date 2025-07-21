@@ -19,7 +19,7 @@ export default function Attendance() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('/api/selectStudent3');
+                const response = await axios.get('/api/selectStudent2');
                 if (response.data) {
                     const result = response.data;
                     const attendanceRecords = result.reduce((accumulator: any, student: any) => {
@@ -68,7 +68,10 @@ export default function Attendance() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={handleSort}>
+                <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                    onClick={handleSort}
+                >
                     이름 정렬 ({sortOrder === 'asc' ? '⬆' : '⬇'})
                 </button>
             </div>
@@ -83,7 +86,10 @@ export default function Attendance() {
                                 이름 ⬍
                             </th>
                             {Array.from({ length: 20 }, (_, index) => (
-                                <th key={index} className="px-4 py-2 text-center">
+                                <th
+                                    key={index}
+                                    className="px-4 py-2 text-center"
+                                >
                                     {index + 1}회차
                                 </th>
                             ))}
@@ -91,7 +97,10 @@ export default function Attendance() {
                     </thead>
                     <tbody>
                         {filteredData.map((student) => (
-                            <tr key={student.name} className="border-b hover:bg-gray-100">
+                            <tr
+                                key={student.name}
+                                className="border-b hover:bg-gray-100"
+                            >
                                 <td className="border px-4 py-2 font-bold sticky left-0 bg-white z-10 whitespace-nowrap">
                                     {student.name}
                                 </td>
