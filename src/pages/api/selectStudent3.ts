@@ -6,7 +6,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         if (req.method === 'GET') {
-            const result = await client.query('SELECT * FROM storage2');
+            const result = await client.query('SELECT * FROM storage3');
 
             return res.status(200).json(result.rows);
         } else {

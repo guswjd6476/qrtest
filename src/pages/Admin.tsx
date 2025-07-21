@@ -156,6 +156,12 @@ const Admin: React.FC = () => {
                             20회 출석현황
                         </button>
                         <button
+                            onClick={() => router.push('/Attendance3')}
+                            className="bg-blue-500 text-white py-2 rounded-md shadow-md hover:bg-blue-600 transition-all"
+                        >
+                            20회 출석현황2
+                        </button>
+                        <button
                             onClick={() => router.push('/Qrcode')}
                             className="bg-blue-500 text-white py-2 rounded-md shadow-md hover:bg-blue-600 transition-all"
                         >
