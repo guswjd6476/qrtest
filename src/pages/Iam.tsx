@@ -112,7 +112,7 @@ const Iam: React.FC = () => {
             }
 
             const uid = uidList.indexnum;
-            const response = await axios.post('/api/addName3', { name, uid });
+            const response = await axios.post('/api/addName2', { name, uid });
 
             if (response.status === 200) {
                 const result: StudentData[] = response.data;
@@ -198,15 +198,9 @@ const Iam: React.FC = () => {
                     <>
                         <div className="text-center">
                             {attendance.map((row, rowIndex) => (
-                                <div
-                                    key={rowIndex}
-                                    className="flex justify-center"
-                                >
+                                <div key={rowIndex} className="flex justify-center">
                                     {row.map((filled, colIndex) => (
-                                        <PuzzlePiece
-                                            key={`${rowIndex}-${colIndex}`}
-                                            filled={filled}
-                                        />
+                                        <PuzzlePiece key={`${rowIndex}-${colIndex}`} filled={filled} />
                                     ))}
                                 </div>
                             ))}
