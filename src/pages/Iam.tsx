@@ -198,15 +198,9 @@ const Iam: React.FC = () => {
                     <>
                         <div className="text-center">
                             {attendance.map((row, rowIndex) => (
-                                <div
-                                    key={rowIndex}
-                                    className="flex justify-center"
-                                >
+                                <div key={rowIndex} className="flex justify-center">
                                     {row.map((filled, colIndex) => (
-                                        <PuzzlePiece
-                                            key={`${rowIndex}-${colIndex}`}
-                                            filled={filled}
-                                        />
+                                        <PuzzlePiece key={`${rowIndex}-${colIndex}`} filled={filled} />
                                     ))}
                                 </div>
                             ))}
