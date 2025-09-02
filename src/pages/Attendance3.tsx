@@ -26,7 +26,7 @@ export default function Attendance() {
                         if (!accumulator[student.name]) {
                             accumulator[student.name] = {
                                 name: student.name,
-                                attendance: Array(16).fill({ attended: false, dateTime: '' }),
+                                attendance: Array(20).fill({ attended: false, dateTime: '' }),
                             };
                         }
                         accumulator[student.name].attendance[student.indexnum - 1] = {
@@ -85,7 +85,7 @@ export default function Attendance() {
                             >
                                 이름 ⬍
                             </th>
-                            {Array.from({ length: 16 }, (_, index) => (
+                            {Array.from({ length: 20 }, (_, index) => (
                                 <th
                                     key={index}
                                     className="px-4 py-2"
