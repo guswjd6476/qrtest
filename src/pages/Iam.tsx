@@ -8,7 +8,7 @@ interface PuzzlePieceProps {
 }
 
 const PuzzlePiece: React.FC<PuzzlePieceProps> = ({ filled }) => {
-    return <div className={`relative w-20 h-20 border rounded-md ${filled ? 'bg-blue-500' : 'bg-gray-300'}`}></div>;
+    return <div className={`relative w-16 h-16 border rounded-md ${filled ? 'bg-blue-500' : 'bg-gray-300'}`}></div>;
 };
 
 interface StudentData {
@@ -112,7 +112,7 @@ const Iam: React.FC = () => {
             }
 
             const uid = uidList.indexnum;
-            const response = await axios.post('/api/addName3', { name, uid });
+            const response = await axios.post('/api/addName4', { name, uid });
 
             if (response.status === 200) {
                 const result: StudentData[] = response.data;
@@ -139,15 +139,16 @@ const Iam: React.FC = () => {
     const generatePuzzle = (result: StudentData[]): boolean[][] => {
         const attendanceArray: boolean[][] = [];
 
-        for (let i = 0; i < 4; i++) {
-            attendanceArray.push(new Array(5).fill(false));
+        // ✅ 6행 × 6열 = 36칸 퍼즐 생성
+        for (let i = 0; i < 6; i++) {
+            attendanceArray.push(new Array(6).fill(false));
         }
 
         result.forEach((data) => {
             const index = data.indexnum - 1; // 0-based index
-            if (index >= 0 && index < 20) {
-                const row = Math.floor(index / 5); // 5 columns
-                const col = index % 5;
+            if (index >= 0 && index < 36) {
+                const row = Math.floor(index / 6); // 6 columns
+                const col = index % 6;
                 attendanceArray[row][col] = true;
             }
         });
@@ -210,7 +211,8 @@ const Iam: React.FC = () => {
                             </div>
                         </div>
 
-                        {stepResult.length >= 20 && (
+                        {/* ✅ 퍼즐 36개 완성 조건 */}
+                        {stepResult.length >= 36 && (
                             <div className="text-center">
                                 <div className="w-44 h-44 mx-auto mb-4">
                                     <Image
