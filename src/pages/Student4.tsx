@@ -23,12 +23,15 @@ const Student: React.FC = () => {
     const [attendance1, setAttendance1] = useState<boolean[][]>([]);
     const [attendance2, setAttendance2] = useState<boolean[][]>([]);
     const [attendance3, setAttendance3] = useState<boolean[][]>([]);
+    const [attendance4, setAttendance4] = useState<boolean[][]>([]); // ✅ Step 4
     const [name, setName] = useState<string>('');
-    const [stepView, setStepView] = useState<'form' | 'select' | 'step1' | 'step2' | 'step3'>('form');
+    const [stepView, setStepView] = useState<'form' | 'select' | 'step1' | 'step2' | 'step3' | 'step4'>('form');
     const router = useRouter();
 
     const ROWS = 4;
     const COLS = 5;
+    const STEP4_ROWS = 6; // ✅ 6행
+    const STEP4_COLS = 6; // ✅ 6열 (총 36칸)
 
     const goToHome = () => {
         router.push('/');
@@ -38,15 +41,17 @@ const Student: React.FC = () => {
         event.preventDefault();
 
         try {
-            const [res1, res2, res3] = await Promise.all([
+            const [res1, res2, res3, res4] = await Promise.all([
                 axios.get('/api/selectStudentMy', { params: { name } }),
                 axios.get('/api/selectStudentMy2', { params: { name } }),
                 axios.get('/api/selectStudentMy3', { params: { name } }),
+                axios.get('/api/selectStudentMy4', { params: { name } }), // ✅ Step 4 API
             ]);
 
             if (res1.status === 200) setAttendance1(generatePuzzle(res1.data, 4, 4));
             if (res2.status === 200) setAttendance2(generatePuzzle(res2.data, ROWS, COLS));
             if (res3.status === 200) setAttendance3(generatePuzzle(res3.data, ROWS, COLS));
+            if (res4.status === 200) setAttendance4(generatePuzzle(res4.data, STEP4_ROWS, STEP4_COLS)); // ✅ 6x6
 
             setStepView('select');
         } catch (error) {
@@ -70,23 +75,14 @@ const Student: React.FC = () => {
     const renderPuzzle = (attendance: boolean[][]) => (
         <div className="text-center">
             {attendance.map((row, rowIndex) => (
-                <div
-                    key={rowIndex}
-                    className="flex justify-center"
-                >
+                <div key={rowIndex} className="flex justify-center">
                     {row.map((filled, colIndex) => (
-                        <PuzzlePiece
-                            key={colIndex}
-                            filled={filled}
-                        />
+                        <PuzzlePiece key={colIndex} filled={filled} />
                     ))}
                 </div>
             ))}
 
-            <button
-                onClick={() => setStepView('select')}
-                className="mt-4 bg-gray-500 px-4 py-2 rounded-md"
-            >
+            <button onClick={() => setStepView('select')} className="mt-4 bg-gray-500 px-4 py-2 rounded-md">
                 뒤로가기
             </button>
         </div>
@@ -99,14 +95,10 @@ const Student: React.FC = () => {
         >
             <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center px-4 py-10">
                 <h1 className="text-4xl font-bold mb-4">I am creator</h1>
-
                 {stepView === 'form' && (
                     <>
                         <h2 className="mb-4">출석체크 해주시는 분의 이름을 입력해주세요</h2>
-                        <form
-                            onSubmit={handleSubmit}
-                            className="mb-4"
-                        >
+                        <form onSubmit={handleSubmit} className="mb-4">
                             <input
                                 type="text"
                                 value={name}
@@ -114,49 +106,36 @@ const Student: React.FC = () => {
                                 className="border border-gray-300 rounded-md px-3 py-2 text-black"
                                 placeholder="이름 입력"
                             />
-                            <button
-                                type="submit"
-                                className="ml-2 bg-blue-500 text-white px-4 py-2 rounded-md"
-                            >
+                            <button type="submit" className="ml-2 bg-blue-500 text-white px-4 py-2 rounded-md">
                                 입력
                             </button>
                         </form>
                     </>
                 )}
-
                 {stepView === 'select' && (
                     <div className="flex flex-col items-center space-y-4">
                         <h2 className="text-lg mb-2">보고 싶은 퍼즐을 선택해주세요</h2>
-                        <button
-                            onClick={() => setStepView('step1')}
-                            className="bg-blue-500 px-4 py-2 rounded-md"
-                        >
+                        <button onClick={() => setStepView('step1')} className="bg-blue-500 px-4 py-2 rounded-md">
                             Step 1
                         </button>
-                        <button
-                            onClick={() => setStepView('step2')}
-                            className="bg-green-500 px-4 py-2 rounded-md"
-                        >
+                        <button onClick={() => setStepView('step2')} className="bg-green-500 px-4 py-2 rounded-md">
                             Step 2
                         </button>
-                        <button
-                            onClick={() => setStepView('step3')}
-                            className="bg-purple-500 px-4 py-2 rounded-md"
-                        >
+                        <button onClick={() => setStepView('step3')} className="bg-purple-500 px-4 py-2 rounded-md">
                             Step 3
                         </button>
-                        <button
-                            onClick={goToHome}
-                            className="mt-4 bg-gray-600 px-4 py-2 rounded-md"
-                        >
+                        <button onClick={() => setStepView('step4')} className="bg-pink-500 px-4 py-2 rounded-md">
+                            Step 4
+                        </button>
+                        <button onClick={goToHome} className="mt-4 bg-gray-600 px-4 py-2 rounded-md">
                             홈
                         </button>
                     </div>
                 )}
-
                 {stepView === 'step1' && renderPuzzle(attendance1)}
                 {stepView === 'step2' && renderPuzzle(attendance2)}
                 {stepView === 'step3' && renderPuzzle(attendance3)}
+                {stepView === 'step4' && renderPuzzle(attendance4)} {/* ✅ 6x6 퍼즐 */}
             </div>
         </div>
     );
